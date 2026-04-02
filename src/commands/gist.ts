@@ -4,28 +4,23 @@ import { L10n } from '../utils/l10n';
 import type { GistTreeItem } from '../views/tree/gistTreeData';
 import { GistServiceManager } from '../services/gist/gistManager';
 
-/**
- * 打开 Gist 文件
- */
 export async function openGist(
   id: string,
   filename: string,
   providerId?: string,
 ): Promise<void> {
-  const fileUri = vscode.Uri.from({
+  const gistUri = vscode.Uri.from({
     scheme: SCHEMA,
     authority: providerId,
     path: `/${filename}`,
     query: `id=${id}`,
   });
 
-  const document = await vscode.workspace.openTextDocument(fileUri);
-  vscode.window.showTextDocument(document);
+  vscode.commands.executeCommand('vscode.open', gistUri, {
+    preview: true,
+  });
 }
 
-/**
- * 重命名 Gist 文件
- */
 export async function renameGist(
   { id, label }: GistTreeItem,
   context: vscode.ExtensionContext,
@@ -52,7 +47,7 @@ export async function renameGist(
       files: {
         [currentName]: null,
         [newName]: {
-          content: '', // 临时内容，后续会填充
+          content: '',
         },
       },
     });
@@ -63,9 +58,6 @@ export async function renameGist(
   }
 }
 
-/**
- * 删除 Gist 文件
- */
 export async function deleteFileCommand(
   { id, label }: GistTreeItem,
   context: vscode.ExtensionContext,
@@ -94,9 +86,6 @@ export async function deleteFileCommand(
   }
 }
 
-/**
- * 创建新 Gist
- */
 export async function createGistCommand(): Promise<void> {
   try {
     const description = await vscode.window.showInputBox({
@@ -123,9 +112,6 @@ export async function createGistCommand(): Promise<void> {
   }
 }
 
-/**
- * 在 Gist 中创建新文件
- */
 export async function createFileCommand(
   { id }: GistTreeItem,
   context: vscode.ExtensionContext,
@@ -161,9 +147,6 @@ export async function createFileCommand(
   }
 }
 
-/**
- * 删除 Gist
- */
 export async function deleteGistCommand(
   { id, label }: GistTreeItem,
   context: vscode.ExtensionContext,

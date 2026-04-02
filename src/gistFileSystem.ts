@@ -75,7 +75,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
         throw vscode.FileSystemError.FileNotFound();
       }
 
-      return Buffer.from(content ?? '');
+      return new TextEncoder().encode(content);
     } catch {
       throw vscode.FileSystemError.FileNotFound(uri);
     }
