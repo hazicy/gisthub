@@ -6,6 +6,7 @@ import {
   getGithubAccessToken,
 } from '../services/authService';
 import type { GistServiceManager } from '../services/gist/gistManager';
+import { L10n } from '../utils/l10n';
 
 export async function openProviderManager(
   gistManager: GistServiceManager,
@@ -20,7 +21,7 @@ export async function openProviderManager(
         { label: '$(cloud) Add Gitee', value: 'gitee' },
       ],
       {
-        placeHolder: 'No providers configured',
+        placeHolder: L10n.t('noActiveProviders'),
       },
     );
 
@@ -71,7 +72,7 @@ export async function openProviderManager(
   });
 
   const selected = await vscode.window.showQuickPick(items, {
-    placeHolder: 'Manage providers',
+    placeHolder: L10n.t('manageProviders.title'),
   });
 
   if (!selected) {
@@ -84,7 +85,7 @@ export async function addProvider(
   type: GistProviderEnum,
 ): Promise<void> {
   const alias = await vscode.window.showInputBox({
-    prompt: 'Enter a name for this provider',
+    prompt: L10n.t('enterGistName'),
     placeHolder: type === GistProviderEnum.GitHub ? 'GitHub' : 'Gitee',
   });
 
@@ -93,7 +94,9 @@ export async function addProvider(
   }
 
   const token = await vscode.window.showInputBox({
-    prompt: `Enter your ${type === GistProviderEnum.GitHub ? 'GitHub' : 'Gitee'} access token`,
+    prompt: type === GistProviderEnum.GitHub
+      ? 'Enter your GitHub access token'
+      : 'Enter your Gitee access token',
     password: true,
     placeHolder:
       type === GistProviderEnum.GitHub ? 'ghp_xxxxxxxx' : 'access_token',
@@ -104,7 +107,7 @@ export async function addProvider(
   }
 
   const username = await vscode.window.showInputBox({
-    prompt: 'Enter your username (optional)',
+    prompt: L10n.t('enterGistName'),
     placeHolder: 'username',
   });
 
@@ -112,5 +115,5 @@ export async function addProvider(
     return;
   }
 
-  vscode.window.showInformationMessage(`Provider ${alias} added successfully`);
+  vscode.window.showInformationMessage(L10n.t('gistUpdated'));
 }

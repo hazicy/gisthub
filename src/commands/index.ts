@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { GistServiceManager } from '../services/gist/gistManager';
+import type { GistTreeItem } from '../views/tree/gistTreeData';
 import {
   createFileCommand,
   createGistCommand,
@@ -20,25 +21,25 @@ export function registerAllCommands(
 ): vscode.Disposable[] {
   const commands = [
     vscode.commands.registerCommand('gisthub.openGist', openGist, context),
-    vscode.commands.registerCommand('gisthub.renameGist', renameGist, context),
+    vscode.commands.registerCommand(
+      'gisthub.renameGist',
+      (item: GistTreeItem) => renameGist(item, context, refreshCallback),
+    ),
     vscode.commands.registerCommand(
       'gisthub.deleteGist',
-      deleteGistCommand,
-      context,
+      (item: GistTreeItem) => deleteGistCommand(item, context, refreshCallback),
     ),
     vscode.commands.registerCommand(
       'gisthub.deleteGistFile',
-      deleteFileCommand,
+      (item: GistTreeItem) => deleteFileCommand(item, context, refreshCallback),
     ),
     vscode.commands.registerCommand(
       'gisthub.createFile',
-      createFileCommand,
-      context,
+      (item: GistTreeItem) => createFileCommand(item, context, refreshCallback),
     ),
     vscode.commands.registerCommand(
       'gisthub.createGist',
-      createGistCommand,
-      context,
+      (item: any) => createGistCommand(context, refreshCallback, item),
     ),
     // Provider management commands
     vscode.commands.registerCommand('gisthub.manageProviders', () =>

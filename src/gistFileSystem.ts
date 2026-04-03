@@ -93,7 +93,8 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     const provider = this.manager.getService(providerId);
     const contentStr = new TextDecoder().decode(content);
 
-    if (!options.overwrite && options.create) {
+    if (!gistId || options.create) {
+      // 创建新 Gist（当 gistId 不存在时或明确指定创建时）
       await provider?.createGist({
         description: L10n.t('newGist'),
         public: false,
@@ -103,7 +104,8 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
           },
         },
       });
-    } else if (options.overwrite) {
+    } else if (options.overwrite || gistId) {
+      // 更新已存在的 Gist 文件
       await provider?.updateGistContent(gistId, filename, contentStr);
     }
 
@@ -121,11 +123,12 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
 
     const provider = this.manager.getService(providerId);
 
-    if (!uri.path) {
+    // 如果有 filename，说明是删除文件；否则删除整个 Gist
+    if (filename) {
+      await provider?.deleteGistFile(gistId, filename);
+    } else {
       await provider?.deleteGist(gistId);
     }
-
-    await provider?.deleteGistFile(gistId, filename);
 
     this.notifyFileChanged(uri, vscode.FileChangeType.Deleted);
   }
