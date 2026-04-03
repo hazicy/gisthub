@@ -61,7 +61,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
         items.push({
           gist,
           collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
-          iconPath: vscode.ThemeIcon.Folder,
+          iconPath: new vscode.ThemeIcon('note'),
           id: gist.id,
           label: gist.description || vscode.l10n.t('unnamedGist'),
           providerId,
