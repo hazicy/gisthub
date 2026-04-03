@@ -1,5 +1,4 @@
 import * as vscode from 'vscode';
-import { L10n } from './utils/l10n';
 import type { GistServiceManager } from './services/gist/gistManager';
 
 /**
@@ -96,7 +95,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     if (!gistId || options.create) {
       // 创建新 Gist（当 gistId 不存在时或明确指定创建时）
       await provider?.createGist({
-        description: L10n.t('newGist'),
+        description: vscode.l10n.t('newGist'),
         public: false,
         files: {
           [filename]: {
@@ -221,7 +220,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     const gistId = params.get('id');
 
     if (!gistId) {
-      throw new Error(L10n.t('invalidGistUri'));
+      throw new Error(vscode.l10n.t('invalidGistUri'));
     }
 
     return { gistId, filename, providerId };

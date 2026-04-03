@@ -1,10 +1,5 @@
 import * as vscode from 'vscode';
-import { L10n } from '../../utils/l10n';
-import type {
-  Gist,
-  GistProviderEnum,
-  ProviderConfig,
-} from '../../providers/gist/types';
+import type { Gist, GistProviderEnum } from '../../providers/gist/types';
 import type { GistServiceManager } from '../../services/gist/gistManager';
 import { SCHEMA } from '../../extension';
 
@@ -39,7 +34,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
 
       return items;
     } catch (error) {
-      vscode.window.showErrorMessage(L10n.t('errorFetchingGists'));
+      vscode.window.showErrorMessage(vscode.l10n.t('errorFetchingGists'));
       return [];
     }
   }
@@ -48,7 +43,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     const providers = this.gistManager.getAllServices();
 
     if (providers.length === 0) {
-      vscode.window.showInformationMessage(L10n.t('noActiveProviders'));
+      vscode.window.showInformationMessage(vscode.l10n.t('noActiveProviders'));
       return [];
     }
 
@@ -68,7 +63,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
           collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
           iconPath: vscode.ThemeIcon.Folder,
           id: gist.id,
-          label: gist.description || L10n.t('unnamedGist'),
+          label: gist.description || vscode.l10n.t('unnamedGist'),
           providerId,
           resourceUri: gistUri,
           contextValue: 'gistFolder',
@@ -108,7 +103,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
         iconPath: vscode.ThemeIcon.File,
         command: {
           command: 'gisthub.openGist',
-          title: L10n.t('openGist'),
+          title: vscode.l10n.t('openGist'),
           arguments: [element.id, filename, element.providerId],
         },
         providerId: element.providerId,

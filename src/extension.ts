@@ -1,7 +1,6 @@
 import * as vscode from 'vscode';
 import { registerAllCommands } from './commands';
 import { GistFileSystemProvider } from './gistFileSystem';
-import { L10n } from './utils/l10n';
 import { GistServiceManager } from './services/gist/gistManager';
 import { GistTreeProvider } from './views/tree/gistTreeData';
 
@@ -40,7 +39,7 @@ export async function activate(context: vscode.ExtensionContext) {
           location: {
             viewId: 'gistView',
           },
-          title: L10n.t('loadingGists'),
+          title: vscode.l10n.t('loadingGists'),
         },
         async () => {
           refreshCallback();
@@ -67,7 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Window,
-      title: L10n.t('loadingGists'),
+      title: vscode.l10n.t('loadingGists'),
     },
     async () => {
       refreshCallback();

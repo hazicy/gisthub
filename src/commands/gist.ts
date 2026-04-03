@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { SCHEMA } from '../extension';
-import { L10n } from '../utils/l10n';
 import type { GistTreeItem } from '../views/tree/gistTreeData';
 import { GistServiceManager } from '../services/gist/gistManager';
 
@@ -36,7 +35,7 @@ export async function renameGist(
 
   const newName = await vscode.window.showInputBox({
     value: currentName,
-    prompt: L10n.t('enterNewName'),
+    prompt: vscode.l10n.t('enterNewName'),
   });
 
   if (!newName || newName === currentName) {
@@ -53,10 +52,10 @@ export async function renameGist(
       },
     });
 
-    vscode.window.showInformationMessage(L10n.t('fileRenamed'));
+    vscode.window.showInformationMessage(vscode.l10n.t('fileRenamed'));
     refreshCallback?.();
   } catch (error) {
-    vscode.window.showErrorMessage(L10n.t('errorRenamingFile'));
+    vscode.window.showErrorMessage(vscode.l10n.t('errorRenamingFile'));
   }
 }
 
@@ -72,12 +71,12 @@ export async function deleteFileCommand(
   const manager = GistServiceManager.getInstance(context);
   const service = manager.getService(id);
   const confirm = await vscode.window.showWarningMessage(
-    L10n.t('confirmDelete', label),
+    vscode.l10n.t('confirmDelete'),
     { modal: true },
-    L10n.t('delete'),
+    vscode.l10n.t('delete'),
   );
 
-  if (confirm !== L10n.t('delete')) {
+  if (confirm !== vscode.l10n.t('delete')) {
     return;
   }
 
@@ -87,10 +86,10 @@ export async function deleteFileCommand(
 
   try {
     vscode.workspace.fs.delete(resourceUri);
-    vscode.window.showInformationMessage(L10n.t('fileDeleted'));
+    vscode.window.showInformationMessage(vscode.l10n.t('fileDeleted'));
     refreshCallback?.();
   } catch (error) {
-    vscode.window.showErrorMessage(L10n.t('errorDeletingFile'));
+    vscode.window.showErrorMessage(vscode.l10n.t('errorDeletingFile'));
   }
 }
 
@@ -104,7 +103,7 @@ export async function createGistCommand(
     const providers = manager.getAllServices();
 
     if (providers.length === 0) {
-      vscode.window.showInformationMessage(L10n.t('noActiveProviders'));
+      vscode.window.showInformationMessage(vscode.l10n.t('noActiveProviders'));
       return;
     }
 
@@ -126,7 +125,7 @@ export async function createGistCommand(
           description: service.getProviderName(),
         })),
         {
-          placeHolder: L10n.t('selectProvider'),
+          placeHolder: vscode.l10n.t('selectProvider'),
         },
       );
 
@@ -138,8 +137,8 @@ export async function createGistCommand(
     }
 
     const description = await vscode.window.showInputBox({
-      prompt: L10n.t('enterGistDescription'),
-      placeHolder: L10n.t('gistDescriptionPlaceholder'),
+      prompt: vscode.l10n.t('enterGistDescription'),
+      placeHolder: vscode.l10n.t('gistDescriptionPlaceholder'),
     });
 
     if (!description) {
@@ -147,8 +146,8 @@ export async function createGistCommand(
     }
 
     const filename = await vscode.window.showInputBox({
-      prompt: L10n.t('enterFileName'),
-      placeHolder: L10n.t('fileNamePlaceholder'),
+      prompt: vscode.l10n.t('enterFileName'),
+      placeHolder: vscode.l10n.t('fileNamePlaceholder'),
     });
 
     if (!filename) {
@@ -166,10 +165,10 @@ export async function createGistCommand(
       },
     });
 
-    vscode.window.showInformationMessage(L10n.t('gistCreated'));
+    vscode.window.showInformationMessage(vscode.l10n.t('gistCreated'));
     refreshCallback?.();
   } catch (error) {
-    vscode.window.showErrorMessage(L10n.t('errorCreatingGist'));
+    vscode.window.showErrorMessage(vscode.l10n.t('errorCreatingGist'));
   }
 }
 
@@ -186,8 +185,8 @@ export async function createFileCommand(
   const service = manager.getService(id);
 
   const filename = await vscode.window.showInputBox({
-    prompt: L10n.t('enterFileName'),
-    placeHolder: L10n.t('fileNamePlaceholder'),
+    prompt: vscode.l10n.t('enterFileName'),
+    placeHolder: vscode.l10n.t('fileNamePlaceholder'),
   });
 
   if (!filename) {
@@ -203,10 +202,10 @@ export async function createFileCommand(
       },
     });
 
-    vscode.window.showInformationMessage(L10n.t('fileCreated'));
+    vscode.window.showInformationMessage(vscode.l10n.t('fileCreated'));
     refreshCallback?.();
   } catch (error) {
-    vscode.window.showErrorMessage(L10n.t('errorCreatingFile'));
+    vscode.window.showErrorMessage(vscode.l10n.t('errorCreatingFile'));
   }
 }
 
@@ -223,12 +222,12 @@ export async function deleteGistCommand(
   const service = manager.getService(id);
   const gistName = typeof label === 'string' ? label : label?.label || '';
   const confirm = await vscode.window.showWarningMessage(
-    L10n.t('confirmDeleteGist', gistName),
+    vscode.l10n.t('confirmDeleteGist', gistName),
     { modal: true },
-    L10n.t('delete'),
+    vscode.l10n.t('delete'),
   );
 
-  if (confirm !== L10n.t('delete')) {
+  if (confirm !== vscode.l10n.t('delete')) {
     return;
   }
 
@@ -238,9 +237,9 @@ export async function deleteGistCommand(
 
   try {
     vscode.workspace.fs.delete(resourceUri, { recursive: false });
-    vscode.window.showInformationMessage(L10n.t('gistDeleted'));
+    vscode.window.showInformationMessage(vscode.l10n.t('gistDeleted'));
     refreshCallback?.();
   } catch (error) {
-    vscode.window.showErrorMessage(L10n.t('errorDeletingGist'));
+    vscode.window.showErrorMessage(vscode.l10n.t('errorDeletingGist'));
   }
 }
