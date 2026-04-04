@@ -1,33 +1,33 @@
-import type { ExtensionContext } from 'vscode';
-import { GiteeProvider } from '../../providers/gist/giteeProvider';
-import { GitHubProvider } from '../../providers/gist/githubProvider';
-import { GistProviderEnum } from '../../providers/gist/types';
+import * as vscode from 'vscode';
+import { GistProviderEnum } from '@gisthub/core';
 import { GistServiceManager } from './gistManager';
-import { GistService } from './gistService';
+import { createGistService } from '@gisthub/core';
 
+/**
+ * 创建 Gist provider 并注册服务
+ * @param type Provider 类型
+ * @param token 访问令牌
+ * @param context VSCode 扩展上下文
+ */
 export async function createProvider(
   type: GistProviderEnum,
   token: string,
-  context: ExtensionContext,
+  context: vscode.ExtensionContext,
 ) {
   const manager = GistServiceManager.getInstance(context);
 
+  const proxyUrl = vscode.workspace
+    .getConfiguration('gisthub')
+    .get<string>('githubApiProxy', '') || undefined;
+
+  const service = createGistService(type, token, proxyUrl);
+
   switch (type) {
     case GistProviderEnum.GitHub:
-      const githubProvider = new GitHubProvider(token);
-      const githubService = new GistService(githubProvider);
-
-      manager.registerService('github', githubService);
-
+      manager.registerService('github', service);
       break;
     case GistProviderEnum.Gitee:
-      const giteeProvider = new GiteeProvider(token);
-      const giteeService = new GistService(giteeProvider);
-
-      manager.registerService('gitee', giteeService);
-
+      manager.registerService('gitee', service);
       break;
-    default:
-      throw new Error('Unsupported provider');
   }
 }

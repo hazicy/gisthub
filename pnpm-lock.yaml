@@ -8,8 +8,27 @@ importers:
 
   .: {}
 
+  packages/core:
+    dependencies:
+      '@octokit/rest':
+        specifier: ^20.1.2
+        version: 20.1.2
+      axios:
+        specifier: ^1.13.6
+        version: 1.13.6
+    devDependencies:
+      '@types/node':
+        specifier: 22.x
+        version: 22.19.15
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   packages/extension:
     dependencies:
+      '@gisthub/core':
+        specifier: workspace:*
+        version: link:../core
       '@octokit/rest':
         specifier: ^20.1.2
         version: 20.1.2

@@ -1,10 +1,10 @@
-import type { ExtensionContext } from 'vscode';
+import * as vscode from 'vscode';
 import {
   GistProviderEnum,
   type ProviderConfig,
-} from '../../providers/gist/types';
+} from '@gisthub/core';
 import { loadServices, saveService } from '../../store/serviceStorage';
-import { GistService } from './gistService';
+import { GistService } from '@gisthub/core';
 import { GitHubProvider } from '../../providers/gist/githubProvider';
 import { getGiteeAccessToken, getGithubAccessToken } from '../authService';
 import { GiteeProvider } from '../../providers/gist/giteeProvider';
@@ -16,9 +16,9 @@ export class GistServiceManager {
 
   activeServiceId?: string;
 
-  constructor(private context: ExtensionContext) {}
+  constructor(private context: vscode.ExtensionContext) {}
 
-  static getInstance(context: ExtensionContext) {
+  static getInstance(context: vscode.ExtensionContext) {
     if (!this.instance) {
       this.instance = new GistServiceManager(context);
     }

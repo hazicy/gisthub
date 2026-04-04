@@ -1,0 +1,1 @@
+{"version":3,"file":"serviceStorage.d.ts","sourceRoot":"","sources":["serviceStorage.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,MAAM,MAAM,QAAQ,CAAC;AACjC,OAAO,KAAK,EAAE,cAAc,EAAE,MAAM,yBAAyB,CAAC;AAI9D,wBAAgB,YAAY,CAC1B,OAAO,EAAE,MAAM,CAAC,gBAAgB,GAC/B,cAAc,EAAE,CAElB;AAED,wBAAsB,WAAW,CAC/B,OAAO,EAAE,MAAM,CAAC,gBAAgB,EAChC,QAAQ,EAAE,cAAc,EAAE,iBAG3B"}

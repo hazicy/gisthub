@@ -185,6 +185,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
+    "@gisthub/core": "workspace:*",
     "@octokit/rest": "^20.1.2",
     "axios": "^1.13.6"
   }

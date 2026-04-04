@@ -1,0 +1,19 @@
+{
+  "name": "@gisthub/core",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@octokit/rest": "^20.1.2",
+    "axios": "^1.13.6"
+  },
+  "devDependencies": {
+    "@types/node": "22.x",
+    "typescript": "^5.9.3"
+  }
+}
