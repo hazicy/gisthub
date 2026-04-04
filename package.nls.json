@@ -1,15 +1,15 @@
 {
   "displayName": "GistHub",
-  "description": "哈哈哈",
+  "description": "Manage code snippets from platforms like GitHub, Gitee, etc.",
   "gisthub.openGist.title": "Open Gist",
   "gisthub.refresh.title": "Refresh",
   "gisthub.refreshProviders.title": "Refresh Providers",
   "gisthub.manageProviders.title": "Manage Providers",
-  "gisthub.renameGist.title": "Rename Gist",
-  "gisthub.deleteGist.title": "Delete Gist",
-  "gisthub.createFile.title": "Create File",
+  "gisthub.renameGist.title": "Rename...",
+  "gisthub.deleteGist.title": "Delete",
+  "gisthub.createFile.title": "New File...",
   "gisthub.createGist.title": "Create Gist",
-  "gisthub.deleteGistFile.title": "Delete File",
+  "gisthub.deleteGistFile.title": "Delete",
   "viewsWelcome.noProviders": "No providers available",
-  "gisthub.openInExternal": "open in"
+  "gisthub.openInExternal": "Open in Browser"
 }

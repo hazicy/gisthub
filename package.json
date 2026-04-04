@@ -139,7 +139,15 @@
       ]
     },
     "configuration": {
-      "title": "GistHub"
+      "title": "GistHub",
+      "properties": {
+        "gisthub.githubApiProxy": {
+          "type": "string",
+          "default": "",
+          "title": "GitHub API 代理",
+          "description": "GitHub API 代理地址，用于加速访问 GitHub API。"
+        }
+      }
     },
     "viewsWelcome": [
       {
