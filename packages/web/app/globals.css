@@ -1,4 +1,5 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@import '@heroui/styles';
 
 :root {
   --background: #ffffff;
@@ -10,6 +11,41 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/* NextUI Theme Variables */
+@layer base {
+  :root {
+    --nextui-backgrounds-value: #000000;
+  }
+
+  light {
+    --colors-primary: #0072f9;
+    --colors-primary-foreground: #ffffff;
+    --colors-secondary: #f4f4f5;
+    --colors-secondary-foreground: #18181b;
+    --colors-success: #17c964;
+    --colors-warning: #f5a524;
+    --colors-danger: #f31260;
+    --colors-content1: #ffffff;
+    --colors-content2: #71717a;
+    --colors-content3: #a1a1aa;
+    --colors-content4: #d4d4d8;
+  }
+
+  dark {
+    --colors-primary: #0072f9;
+    --colors-primary-foreground: #ffffff;
+    --colors-secondary: #27272a;
+    --colors-secondary-foreground: #fafafa;
+    --colors-success: #17c964;
+    --colors-warning: #f5a524;
+    --colors-danger: #f31260;
+    --colors-content1: #09090b;
+    --colors-content2: #18181b;
+    --colors-content3: #27272a;
+    --colors-content4: #3f3f46;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

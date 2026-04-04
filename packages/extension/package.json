@@ -1,5 +1,5 @@
 {
-  "name": "gisthub-extension",
+  "name": "gisthub",
   "displayName": "%displayName%",
   "icon": "resources/logo.png",
   "publisher": "Hazi",
@@ -174,7 +174,7 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
     "@types/vscode": "^1.110.0",
-    "@vscode/l10n-dev": "^0.0.36",
+    "@vscode/l10n-dev": "^0.0.35",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "eslint": "^9.39.2",
@@ -186,7 +186,6 @@
   },
   "dependencies": {
     "@octokit/rest": "^20.1.2",
-    "@vscode/l10n": "^0.0.36",
     "axios": "^1.13.6"
   }
 }
