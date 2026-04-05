@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GistHub Web
 
-## Getting Started
+基于 Next.js 的 Web Dashboard，用于管理 GitHub 和 Gitee Gist。
 
-First, run the development server:
+## 功能
+
+- **多提供商支持**: 同时管理 GitHub 和 Gitee 账户
+- **Gist 浏览**: 查看所有 Gist 和星标 Gist
+- **在线编辑**: 内置 Markdown 编辑器，支持语法高亮
+- **文件管理**: 创建、编辑、删除 Gist 和文件
+- **响应式设计**: 支持桌面端和移动端访问
+
+## 安装
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# 开发模式
+pnpm dev:web
+
+# 生产构建
+pnpm build:web
+pnpm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 开发
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# 安装依赖
+pnpm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# 启动开发服务器
+pnpm dev:web
+```
 
-## Learn More
+访问 http://localhost:3000
 
-To learn more about Next.js, take a look at the following resources:
+## 技术栈
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **框架**: Next.js 16
+- **UI 库**: HeroUI (React 19)
+- **编辑器**: ProseMirror (富文本编辑器)
+- **状态管理**: Zustand
+- **样式**: Tailwind CSS 4
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 页面结构
 
-## Deploy on Vercel
+| 路径 | 描述 |
+|------|------|
+| `/` | 首页 - 快速入口 |
+| `/gists` | Gist 列表页 |
+| `/gist/[id]` | Gist 详情/编辑页 |
+| `/providers` | 提供商管理页 |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 与核心库集成
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Web Dashboard 使用 `@gisthub/core` 作为核心库，实现与 VS Code 插件相同的功能。
+
+```typescript
+import { GistProviderFactory, GistProviderEnum } from '@gisthub/core';
+```
+
+## License
+
+MIT License - 详见 [根目录 LICENSE](../../LICENSE)
