@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "gisthub-web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,13 +9,34 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@gisthub/core": "workspace:*",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
     "@iconify/react": "^5.2.1",
+    "@lumino/coreutils": "^2.2.2",
+    "@lumino/domutils": "^2.0.4",
+    "@lumino/messaging": "^2.0.4",
+    "@lumino/widgets": "^2.7.5",
     "framer-motion": "^11.18.2",
     "next": "16.2.2",
+    "prosemirror-commands": "^1.7.1",
+    "prosemirror-dropcursor": "^1.8.2",
+    "prosemirror-gapcursor": "^1.4.1",
+    "prosemirror-history": "^1.5.0",
+    "prosemirror-inputrules": "^1.5.1",
+    "prosemirror-keymap": "^1.2.3",
+    "prosemirror-markdown": "^1.13.4",
+    "prosemirror-model": "^1.25.4",
+    "prosemirror-schema-basic": "^1.2.4",
+    "prosemirror-schema-list": "^1.5.1",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-view": "^1.41.8",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
