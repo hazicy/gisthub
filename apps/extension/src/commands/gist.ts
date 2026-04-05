@@ -308,7 +308,10 @@ export async function uploadFileCommand(
     const validation = service.validateFileSize(content, fileName);
     if (!validation.valid) {
       const maxSize = service.getFileSizeLimit().maxFileSize / (1024 * 1024);
-      const providerName = service.getProviderName() === GistProviderEnum.Gitee ? 'Gitee' : 'GitHub';
+      const providerName =
+        service.getProviderName() === GistProviderEnum.Gitee
+          ? 'Gitee'
+          : 'GitHub';
       vscode.window.showErrorMessage(
         vscode.l10n.t('fileTooLargeMessage', {
           maxSize: maxSize.toFixed(0),
@@ -368,12 +371,14 @@ export async function uploadFileCommand(
       const gists = await service.getGists();
 
       if (gists.length === 0) {
-        vscode.window.showInformationMessage(vscode.l10n.t('noActiveProviders'));
+        vscode.window.showInformationMessage(
+          vscode.l10n.t('noActiveProviders'),
+        );
         return;
       }
 
       const selectedGist = await vscode.window.showQuickPick(
-        gists.map((gist) => ({
+        gists.map((gist: any) => ({
           label: gist.description || vscode.l10n.t('unnamedGist'),
           description: gist.id,
           gist,
