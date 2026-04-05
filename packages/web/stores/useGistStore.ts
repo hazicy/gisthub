@@ -19,6 +19,7 @@ interface GistState {
   // UI state
   isCreateModalOpen: boolean;
   isDetailModalOpen: boolean;
+  isUploadModalOpen: boolean;
 
   // Actions
   setCurrentProvider: (provider: GistProvider | null) => void;
@@ -38,6 +39,7 @@ interface GistState {
 
   setCreateModalOpen: (open: boolean) => void;
   setDetailModalOpen: (open: boolean) => void;
+  setUploadModalOpen: (open: boolean) => void;
 }
 
 export const useGistStore = create<GistState>()(
@@ -52,6 +54,7 @@ export const useGistStore = create<GistState>()(
       error: null,
       isCreateModalOpen: false,
       isDetailModalOpen: false,
+      isUploadModalOpen: false,
 
       setCurrentProvider: (provider) => set({ currentProvider: provider }),
 
@@ -112,6 +115,7 @@ export const useGistStore = create<GistState>()(
 
       setCreateModalOpen: (open) => set({ isCreateModalOpen: open }),
       setDetailModalOpen: (open) => set({ isDetailModalOpen: open }),
+      setUploadModalOpen: (open) => set({ isUploadModalOpen: open }),
     }),
     {
       name: 'gist-storage',

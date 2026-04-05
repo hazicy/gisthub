@@ -81,7 +81,6 @@ function GistCard({
       <Card.Footer className="justify-end gap-2">
         <Button
           size="sm"
-          variant="light"
           variant="danger"
           onClick={(e) => {
             e.stopPropagation();
@@ -107,6 +106,7 @@ export function GistList() {
     addGist,
     removeGistFromStore,
     setCreateModalOpen,
+    setUploadModalOpen,
   } = useGistStore();
 
   const [filter, setFilter] = useState<'all' | 'public' | 'private'>('all');
@@ -185,6 +185,12 @@ export function GistList() {
             onClick={() => setCreateModalOpen(true)}
           >
             新建
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => setUploadModalOpen(true)}
+          >
+            上传文件
           </Button>
         </div>
       </div>

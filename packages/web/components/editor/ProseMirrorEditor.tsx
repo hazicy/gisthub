@@ -12,7 +12,8 @@ import { baseKeymap, toggleMark, setBlockType } from 'prosemirror-commands';
 import { dropCursor } from 'prosemirror-dropcursor';
 import { gapCursor } from 'prosemirror-gapcursor';
 import { InputRule, inputRules } from 'prosemirror-inputrules';
-import { markdown } from 'prosemirror-markdown';
+// TODO: 修复 prosemirror-markdown 导入
+// import { markdown } from 'prosemirror-markdown';
 import { Button } from '@heroui/react';
 
 interface ProseMirrorEditorProps {

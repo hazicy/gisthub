@@ -134,7 +134,7 @@ function JupyterCell({ cell }: { cell: NotebookCell }) {
         </span>
         <Button
           size="sm"
-          variant="light"
+          variant="ghost"
           onClick={() => setIsInputExpanded(!isInputExpanded)}
         >
           {isInputExpanded ? '隐藏' : '显示'}
