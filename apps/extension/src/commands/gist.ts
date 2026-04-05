@@ -82,11 +82,12 @@ export async function deleteFileCommand(
   }
 
   if (!resourceUri) {
-    throw new Error('');
+    vscode.window.showErrorMessage(vscode.l10n.t('errorDeletingFile'));
+    return;
   }
 
   try {
-    vscode.workspace.fs.delete(resourceUri);
+    await vscode.workspace.fs.delete(resourceUri);
     vscode.window.showInformationMessage(vscode.l10n.t('fileDeleted'));
     refreshCallback?.();
   } catch (error) {
@@ -169,15 +170,16 @@ export async function createFileCommand(
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
-  if (!id) {
-    throw vscode.FileSystemError.FileExists();
+  if (!id || !providerId) {
+    return;
   }
 
   const manager = GistServiceManager.getInstance(context);
   const service = manager.getService(providerId);
 
   if (!service) {
-    throw new Error('找不到这个服务');
+    vscode.window.showErrorMessage(vscode.l10n.t('errorCreatingFile'));
+    return;
   }
 
   const filename = await vscode.window.showInputBox({
@@ -228,11 +230,12 @@ export async function deleteGistCommand(
   }
 
   if (!resourceUri) {
-    throw new Error('');
+    vscode.window.showErrorMessage(vscode.l10n.t('errorDeletingGist'));
+    return;
   }
 
   try {
-    vscode.workspace.fs.delete(resourceUri, { recursive: false });
+    await vscode.workspace.fs.delete(resourceUri, { recursive: false });
     vscode.window.showInformationMessage(vscode.l10n.t('gistDeleted'));
     refreshCallback?.();
   } catch (error) {
@@ -240,7 +243,17 @@ export async function deleteGistCommand(
   }
 }
 
-export async function openInExternal(context: vscode.ExtensionContext) {}
+export async function openInExternal(
+  item: GistTreeItem,
+): Promise<void> {
+  const gist = item.gist;
+  if (!gist?.html_url) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorOpeningExternal'));
+    return;
+  }
+
+  await vscode.env.openExternal(vscode.Uri.parse(gist.html_url));
+}
 
 /**
  * 上传文件到 Gist

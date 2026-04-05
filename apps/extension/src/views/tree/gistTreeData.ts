@@ -81,9 +81,17 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
 
     const service = this.gistManager.getService(element.providerId);
 
-    const gist = await service?.getGist(element.id);
+    if (!service) {
+      return [];
+    }
 
-    const files = Object.keys(gist?.files ?? {});
+    const gist = await service.getGist(element.id);
+
+    if (!gist) {
+      return [];
+    }
+
+    const files = Object.keys(gist.files ?? {});
 
     const items = files.map((filename): GistTreeItem => {
       const fileUri = vscode.Uri.from({
