@@ -8,9 +8,6 @@ function getGitHubApiProxy(): string | null {
   return customUrl || null;
 }
 
-/**
- * GitHub Gist Provider - 扩展 core 包实现，添加 VSCode 特定功能
- */
 export class GitHubProvider extends CoreGitHubProvider {
   constructor(token?: string) {
     const proxyUrl = getGitHubApiProxy();

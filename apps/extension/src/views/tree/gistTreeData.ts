@@ -50,7 +50,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
         return await this.getFileItems(element);
       }
       return [];
-    } catch {
+    } catch (error) {
       return [new ErrorNode(vscode.l10n.t('errorFetchingGists'))];
     }
   }

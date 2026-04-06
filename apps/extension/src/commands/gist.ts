@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import { SCHEMA } from '../extension';
-import type { GistTreeItem } from '../views/tree/gistTreeData';
 import { GistServiceManager } from '../services/gist/gistManager';
 import { GistProviderEnum, type Gist } from '@gisthub/core';
+import type { GistNode } from '../views/tree/treeItem';
 
 export async function openGist(
   id: string,
@@ -22,7 +22,7 @@ export async function openGist(
 }
 
 export async function renameGist(
-  { id, label, providerId }: GistTreeItem,
+  { id, label, providerId }: GistNode,
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
@@ -66,7 +66,7 @@ export async function renameGist(
 }
 
 export async function deleteFileCommand(
-  { id, providerId, resourceUri }: GistTreeItem,
+  { id, providerId, resourceUri }: GistNode,
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
@@ -103,7 +103,7 @@ export async function deleteFileCommand(
 export async function createGistCommand(
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
-  item?: GistTreeItem,
+  item?: GistNode,
 ): Promise<void> {
   try {
     const manager = GistServiceManager.getInstance(context);
@@ -177,7 +177,7 @@ export async function createGistCommand(
 }
 
 export async function createFileCommand(
-  { id, providerId }: GistTreeItem,
+  { id, providerId }: GistNode,
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
@@ -219,7 +219,7 @@ export async function createFileCommand(
 }
 
 export async function deleteGistCommand(
-  { id, label, providerId, resourceUri }: GistTreeItem,
+  { id, label, providerId, resourceUri }: GistNode,
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
@@ -253,17 +253,7 @@ export async function deleteGistCommand(
   }
 }
 
-export async function openInExternal(
-  item: GistTreeItem,
-): Promise<void> {
-  const gist = item.gist;
-  if (!gist?.html_url) {
-    vscode.window.showErrorMessage(vscode.l10n.t('errorOpeningExternal'));
-    return;
-  }
-
-  await vscode.env.openExternal(vscode.Uri.parse(gist.html_url));
-}
+export async function openInExternal(item: GistNode): Promise<void> {}
 
 /**
  * 上传文件到 Gist

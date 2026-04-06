@@ -70,3 +70,5 @@ export type GistTreeItem =
   | GistFileNode
   | ErrorNode
   | EmptyNode;
+
+export type GistNode = GistFolderNode | GistFileNode;

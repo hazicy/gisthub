@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
-import {
-  GistProviderEnum,
-  type ProviderConfig,
-} from '@gisthub/core';
+import { GistProviderEnum, type ProviderConfig } from '@gisthub/core';
 import { loadServices, saveService } from '../../store/serviceStorage';
 import { GistService } from '@gisthub/core';
 import { GitHubProvider } from '../../providers/gist/githubProvider';

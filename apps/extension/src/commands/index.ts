@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import type { GistServiceManager } from '../services/gist/gistManager';
-import type { GistTreeItem } from '../views/tree/gistTreeData';
 import {
   createFileCommand,
   createGistCommand,
@@ -12,10 +11,8 @@ import {
   uploadFileCommand,
 } from './gist';
 import { openProviderManager } from './provider';
+import type { GistNode } from '../views/tree/treeItem';
 
-/**
- * 注册所有命令
- */
 export function registerAllCommands(
   gistManager: GistServiceManager,
   refreshCallback: () => void,
@@ -23,32 +20,29 @@ export function registerAllCommands(
 ): vscode.Disposable[] {
   const commands = [
     vscode.commands.registerCommand('gisthub.openGist', openGist, context),
-    vscode.commands.registerCommand(
-      'gisthub.renameGist',
-      (item: GistTreeItem) => renameGist(item, context, refreshCallback),
+    vscode.commands.registerCommand('gisthub.renameGist', (item: GistNode) =>
+      renameGist(item, context, refreshCallback),
     ),
-    vscode.commands.registerCommand(
-      'gisthub.deleteGist',
-      (item: GistTreeItem) => deleteGistCommand(item, context, refreshCallback),
+    vscode.commands.registerCommand('gisthub.deleteGist', (item: GistNode) =>
+      deleteGistCommand(item, context, refreshCallback),
     ),
     vscode.commands.registerCommand(
       'gisthub.deleteGistFile',
-      (item: GistTreeItem) => deleteFileCommand(item, context, refreshCallback),
+      (item: GistNode) => deleteFileCommand(item, context, refreshCallback),
     ),
-    vscode.commands.registerCommand(
-      'gisthub.createFile',
-      (item: GistTreeItem) => createFileCommand(item, context, refreshCallback),
+    vscode.commands.registerCommand('gisthub.createFile', (item: GistNode) =>
+      createFileCommand(item, context, refreshCallback),
     ),
-    vscode.commands.registerCommand('gisthub.createGist', (item?: GistTreeItem) =>
+    vscode.commands.registerCommand('gisthub.createGist', (item?: GistNode) =>
       createGistCommand(context, refreshCallback, item),
     ),
     vscode.commands.registerCommand('gisthub.uploadFile', () =>
       uploadFileCommand(context, refreshCallback),
     ),
-    vscode.commands.registerCommand('gisthub.openInExternal', (item: GistTreeItem) =>
-      openInExternal(item),
+    vscode.commands.registerCommand(
+      'gisthub.openInExternal',
+      (item: GistNode) => openInExternal(item),
     ),
-    // Provider management commands
     vscode.commands.registerCommand('gisthub.manageProviders', () =>
       openProviderManager(gistManager, context),
     ),
