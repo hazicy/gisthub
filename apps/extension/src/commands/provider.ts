@@ -142,7 +142,7 @@ async function executeProviderAction(
       break;
     case 'delete':
       if (item.providerId) {
-        await deleteProvider(item.providerId, context, gistManager);
+        await deleteProvider(item.providerId, gistManager);
       }
       break;
   }
@@ -209,7 +209,6 @@ async function editProvider(
 
 async function deleteProvider(
   providerId: string,
-  _context: vscode.ExtensionContext,
   gistManager: GistServiceManager,
 ): Promise<void> {
   const confirm = await vscode.window.showWarningMessage(
