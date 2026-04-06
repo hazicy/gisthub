@@ -13,6 +13,7 @@
   "fileRenamed": "文件已重命名",
   "errorRenamingFile": "重命名文件时出错",
   "confirmDelete": "确认删除？",
+  "confirm": "确认",
   "delete": "删除",
   "fileDeleted": "文件已删除",
   "errorDeletingFile": "删除文件时出错",
@@ -36,5 +37,7 @@
   "fileUploaded": "文件上传成功",
   "errorUploadingFile": "上传文件时出错",
   "createGistForFile": "为该文件创建新 Gist",
-  "uploadToExistingGist": "上传到现有 Gist"
+  "uploadToExistingGist": "上传到现有 Gist",
+  "providerDeleted": "提供者 {providerId} 已删除",
+  "errorOpeningExternal": "打开外部浏览器时出错"
 }

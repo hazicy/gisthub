@@ -8,14 +8,35 @@ export type GistTreeItem = {
   providerId: string;
 } & vscode.TreeItem;
 
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+const CACHE_TTL = 30 * 1000; // 30 秒缓存
+
 export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<
     GistTreeItem | undefined | null | void
   >();
+  private cache = new Map<string, CacheEntry<unknown>>();
+  private cacheTimer?: ReturnType<typeof setInterval>;
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  constructor(private readonly gistManager: GistServiceManager) {}
+  constructor(private readonly gistManager: GistServiceManager) {
+    // 定期清理过期缓存
+    this.cacheTimer = setInterval(() => this.cleanCache(), CACHE_TTL);
+  }
+
+  dispose(): void {
+    if (this.cacheTimer) {
+      clearInterval(this.cacheTimer);
+      this.cacheTimer = undefined;
+    }
+    this.cache.clear();
+    this._onDidChangeTreeData.dispose();
+  }
 
   getTreeItem(element: GistTreeItem): vscode.TreeItem {
     return element;
@@ -38,12 +59,39 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     }
   }
 
+  private getCached<T>(key: string): T | undefined {
+    const entry = this.cache.get(key) as CacheEntry<T> | undefined;
+    if (entry && Date.now() - entry.timestamp < CACHE_TTL) {
+      return entry.data;
+    }
+    return undefined;
+  }
+
+  private setCache<T>(key: string, data: T): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+
+  private cleanCache(): void {
+    const now = Date.now();
+    for (const [key, entry] of this.cache.entries()) {
+      if (now - entry.timestamp >= CACHE_TTL) {
+        this.cache.delete(key);
+      }
+    }
+  }
+
   private async getAllGistItems(): Promise<GistTreeItem[]> {
     const providers = this.gistManager.getAllServices();
 
     if (providers.length === 0) {
       vscode.window.showInformationMessage(vscode.l10n.t('noActiveProviders'));
       return [];
+    }
+
+    const cacheKey = 'allGists';
+    const cached = this.getCached<GistTreeItem[]>(cacheKey);
+    if (cached) {
+      return cached;
     }
 
     const items: GistTreeItem[] = [];
@@ -70,6 +118,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
       }
     }
 
+    this.setCache(cacheKey, items);
     return items;
   }
 
@@ -82,6 +131,12 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
 
     if (!service) {
       return [];
+    }
+
+    const cacheKey = `gist:${element.providerId}:${element.id}`;
+    const cached = this.getCached<GistTreeItem[]>(cacheKey);
+    if (cached) {
+      return cached;
     }
 
     const gist = await service.getGist(element.id);
@@ -115,10 +170,12 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
       };
     });
 
+    this.setCache(cacheKey, items);
     return items;
   }
 
   refresh(): void {
+    this.cache.clear();
     this._onDidChangeTreeData.fire();
   }
 }

@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import type { ProviderConfig } from '../providers/gist/types';
 
-const KEY = 'gist.services1';
+const KEY = 'gist.services';
 
 export function loadServices(
   context: vscode.ExtensionContext,
