@@ -114,6 +114,16 @@ export interface GistProvider {
   getStarredGists(): Promise<Gist[]>;
 
   /**
+   * Star 一个 Gist
+   */
+  starGist(id: string): Promise<void>;
+
+  /**
+   * Unstar 一个 Gist
+   */
+  unstarGist(id: string): Promise<void>;
+
+  /**
    * 根据 ID 获取单个 Gist 详情
    */
   getGist(id: string): Promise<Gist>;

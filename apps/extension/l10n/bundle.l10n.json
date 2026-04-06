@@ -4,6 +4,7 @@
   "loadingGists": "Loading gists...",
   "errorFetchingGists": "Error fetching gists",
   "noActiveProviders": "No active providers",
+  "noStarredGists": "No starred gists",
   "unnamedGist": "Untitled Gist",
   "openGist": "Open Gist",
   "manageProviders.title": "Manage Providers",
@@ -39,5 +40,11 @@
   "createGistForFile": "Create a new Gist for this file",
   "uploadToExistingGist": "Upload to existing Gist",
   "providerDeleted": "Provider {providerId} deleted",
-  "errorOpeningExternal": "Error opening in external browser"
+  "errorOpeningExternal": "Error opening in external browser",
+  "gisthub.starGist.title": "Star Gist",
+  "gisthub.unstarGist.title": "Unstar Gist",
+  "gistStarred": "Gist starred",
+  "errorStarringGist": "Error starring gist",
+  "gistUnstarred": "Gist unstarred",
+  "errorUnstarringGist": "Error unstarring gist"
 }

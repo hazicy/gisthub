@@ -253,6 +253,64 @@ export async function deleteGistCommand(
   }
 }
 
+/**
+ * Star 一个 Gist
+ */
+export async function starGistCommand(
+  { id, providerId }: GistNode,
+  context: vscode.ExtensionContext,
+  refreshCallback?: () => void,
+): Promise<void> {
+  if (!id || !providerId) {
+    return;
+  }
+
+  const manager = GistServiceManager.getInstance(context);
+  const service = manager.getService(providerId);
+
+  if (!service) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorStarringGist'));
+    return;
+  }
+
+  try {
+    await service.starGist(id);
+    vscode.window.showInformationMessage(vscode.l10n.t('gistStarred'));
+    refreshCallback?.();
+  } catch (error) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorStarringGist'));
+  }
+}
+
+/**
+ * Unstar 一个 Gist
+ */
+export async function unstarGistCommand(
+  { id, providerId }: GistNode,
+  context: vscode.ExtensionContext,
+  refreshCallback?: () => void,
+): Promise<void> {
+  if (!id || !providerId) {
+    return;
+  }
+
+  const manager = GistServiceManager.getInstance(context);
+  const service = manager.getService(providerId);
+
+  if (!service) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorUnstarringGist'));
+    return;
+  }
+
+  try {
+    await service.unstarGist(id);
+    vscode.window.showInformationMessage(vscode.l10n.t('gistUnstarred'));
+    refreshCallback?.();
+  } catch (error) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorUnstarringGist'));
+  }
+}
+
 export async function openInExternal(item: GistNode): Promise<void> {
   // GistFileNode 没有 gist 属性，只能从 GistFolderNode 获取
   if (!('gist' in item) || !item.gist?.id) {

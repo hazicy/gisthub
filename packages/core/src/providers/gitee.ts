@@ -115,6 +115,16 @@ export class GiteeProvider implements GistProvider {
     return [];
   }
 
+  async starGist(id: string): Promise<void> {
+    // Gitee API 不支持 star 操作
+    throw new Error('Gitee does not support starring gists');
+  }
+
+  async unstarGist(id: string): Promise<void> {
+    // Gitee API 不支持 unstar 操作
+    throw new Error('Gitee does not support unstarring gists');
+  }
+
   async getGist(id: string): Promise<Gist> {
     const response = await this.axiosInstance.get<GiteeGistObject>(`/gists/${id}`);
     return this.convertToStandardGist(response.data);

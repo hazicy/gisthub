@@ -80,6 +80,27 @@ export class GistService {
   }
 
   /**
+   * 获取所有星标的 Gist
+   */
+  async getStarredGists(): Promise<Gist[]> {
+    return this.provider.getStarredGists();
+  }
+
+  /**
+   * Star 一个 Gist
+   */
+  async starGist(id: string): Promise<void> {
+    return this.provider.starGist(id);
+  }
+
+  /**
+   * Unstar 一个 Gist
+   */
+  async unstarGist(id: string): Promise<void> {
+    return this.provider.unstarGist(id);
+  }
+
+  /**
    * 获取当前服务提供商名称
    */
   getProviderName(): GistProviderEnum {

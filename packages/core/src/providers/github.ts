@@ -68,6 +68,14 @@ export class GitHubProvider implements GistProvider {
     return response.data as unknown as Gist[];
   }
 
+  async starGist(id: string): Promise<void> {
+    await this.octokit.gists.star({ gist_id: id });
+  }
+
+  async unstarGist(id: string): Promise<void> {
+    await this.octokit.gists.unstar({ gist_id: id });
+  }
+
   async getGist(id: string): Promise<Gist> {
     const response = await this.octokit.gists.get({ gist_id: id });
     return response.data as unknown as Gist;
