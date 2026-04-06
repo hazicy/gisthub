@@ -4,6 +4,7 @@ import { GistFileSystemProvider } from './gistFileSystem';
 import { GistServiceManager } from './services/gist/gistManager';
 import { GistTreeProvider } from './views/tree/gistTreeData';
 import { StarTreeProvider } from './views/tree/starTreeData';
+import { StarDecorationProvider } from './views/tree/starDecorationProvider';
 import { GiteeAuthenticationProvider } from './giteeAuth';
 
 export const SCHEMA = 'gisthub';
@@ -29,10 +30,12 @@ export async function activate(context: vscode.ExtensionContext) {
   // 创建树状图提供者
   const gistProvider = new GistTreeProvider(gistManager);
   const starProvider = new StarTreeProvider(gistManager);
+  const starDecorationProvider = new StarDecorationProvider(gistManager);
 
   // 注册树状图提供者
   vscode.window.registerTreeDataProvider('gistView', gistProvider);
   vscode.window.registerTreeDataProvider('starView', starProvider);
+  vscode.window.registerFileDecorationProvider(starDecorationProvider);
 
   // 注册文件系统提供者
   const fileSystemDisposable = vscode.workspace.registerFileSystemProvider(
@@ -41,9 +44,10 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // 刷新回调函数
-  const refreshCallback = () => {
+  const refreshCallback = async () => {
     gistProvider?.refresh();
     starProvider?.refresh();
+    await starDecorationProvider?.refresh();
   };
 
   // 注册刷新命令
