@@ -20,12 +20,5 @@ export async function createProvider(
 
   const id = alias ?? (type === GistProviderEnum.GitHub ? 'github' : 'gitee');
 
-  switch (type) {
-    case GistProviderEnum.GitHub:
-      manager.registerService(id, service);
-      break;
-    case GistProviderEnum.Gitee:
-      manager.registerService(id, service);
-      break;
-  }
+  manager.registerService(id, service);
 }
