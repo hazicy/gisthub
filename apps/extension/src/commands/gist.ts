@@ -26,12 +26,17 @@ export async function renameGist(
   context: vscode.ExtensionContext,
   refreshCallback?: () => void,
 ): Promise<void> {
-  if (!id) {
+  if (!id || !providerId) {
     return;
   }
 
   const manager = GistServiceManager.getInstance(context);
   const service = manager.getService(providerId);
+
+  if (!service) {
+    vscode.window.showErrorMessage(vscode.l10n.t('errorRenamingFile'));
+    return;
+  }
   const currentName = typeof label === 'string' ? label : label?.label || '';
 
   const newName = await vscode.window.showInputBox({
@@ -148,7 +153,13 @@ export async function createGistCommand(
     }
 
     const service = manager.getService(providerId);
-    await service?.createGist({
+
+    if (!service) {
+      vscode.window.showErrorMessage(vscode.l10n.t('errorCreatingGist'));
+      return;
+    }
+
+    await service.createGist({
       description,
       public: false,
       files: {
@@ -217,7 +228,6 @@ export async function deleteGistCommand(
   }
 
   const manager = GistServiceManager.getInstance(context);
-  const service = manager.getService(providerId);
   const gistName = typeof label === 'string' ? label : label?.label || '';
   const confirm = await vscode.window.showWarningMessage(
     vscode.l10n.t('confirmDeleteGist', gistName),
