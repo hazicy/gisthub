@@ -20,7 +20,7 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     GistTreeItem | undefined | null | void
   >();
   private cache = new Map<string, CacheEntry<unknown>>();
-  private cacheTimer?: NodeJS.Timeout;
+  private cacheTimer?: ReturnType<typeof setInterval>;
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 

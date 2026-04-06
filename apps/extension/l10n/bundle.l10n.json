@@ -13,6 +13,7 @@
   "fileRenamed": "File renamed",
   "errorRenamingFile": "Error renaming file",
   "confirmDelete": "Are you sure you want to delete?",
+  "confirm": "Confirm",
   "delete": "Delete",
   "fileDeleted": "File deleted",
   "errorDeletingFile": "Error deleting file",
@@ -36,5 +37,7 @@
   "fileUploaded": "File uploaded successfully",
   "errorUploadingFile": "Error uploading file",
   "createGistForFile": "Create a new Gist for this file",
-  "uploadToExistingGist": "Upload to existing Gist"
+  "uploadToExistingGist": "Upload to existing Gist",
+  "providerDeleted": "Provider {providerId} deleted",
+  "errorOpeningExternal": "Error opening in external browser"
 }
