@@ -238,9 +238,13 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     filename: string;
     providerId: string;
   } {
-    // URI 格式: gisthub://providerId/filename
+    // URI 格式: gisthub://providerId/filename?id=xxx
 
     const providerId = uri.authority;
+    if (!providerId) {
+      throw vscode.FileSystemError.FileNotFound(uri);
+    }
+
     const filename = uri.path.startsWith('/') ? uri.path.slice(1) : uri.path;
     const params = new URLSearchParams(uri.query);
     const gistId = params.get('id');
@@ -249,7 +253,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
       throw new Error(vscode.l10n.t('invalidGistUri'));
     }
 
-    return { gistId, filename, providerId };
+    return { gistId, filename: decodeURIComponent(filename), providerId };
   }
 
   /**
