@@ -11,7 +11,6 @@
   "dependencies": {
     "@gisthub/core": "workspace:*",
     "better-auth": "^1.5.6",
-    "better-auth/client": "^1.5.6",
     "@heroui/react": "^3.0.2",
     "@heroui/styles": "^3.0.2",
     "@iconify/react": "^5.2.1",
