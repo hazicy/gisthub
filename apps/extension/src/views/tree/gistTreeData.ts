@@ -1,19 +1,19 @@
 import * as vscode from 'vscode';
-import type { Gist } from '../../providers/gist/types';
 import type { GistServiceManager } from '../../services/gist/gistManager';
-import { SCHEMA } from '../../extension';
-
-export type GistTreeItem = {
-  gist?: Gist;
-  providerId: string;
-} & vscode.TreeItem;
+import {
+  EmptyNode,
+  ErrorNode,
+  GistFileNode,
+  GistFolderNode,
+  type GistTreeItem,
+} from './treeItem';
 
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
 }
 
-const CACHE_TTL = 30 * 1000; // 30 秒缓存
+const CACHE_TTL = 30 * 1000;
 
 export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
   private _onDidChangeTreeData = new vscode.EventEmitter<
@@ -25,7 +25,6 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   constructor(private readonly gistManager: GistServiceManager) {
-    // 定期清理过期缓存
     this.cacheTimer = setInterval(() => this.cleanCache(), CACHE_TTL);
   }
 
@@ -42,20 +41,17 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     return element;
   }
 
-  async getChildren(
-    element?: GistTreeItem | undefined,
-  ): Promise<GistTreeItem[]> {
+  async getChildren(element?: GistTreeItem): Promise<GistTreeItem[]> {
     try {
       if (!element) {
         return await this.getAllGistItems();
       }
-
-      const items = await this.getFileItems(element);
-
-      return items;
-    } catch (error) {
-      vscode.window.showErrorMessage(vscode.l10n.t('errorFetchingGists'));
+      if (element instanceof GistFolderNode) {
+        return await this.getFileItems(element);
+      }
       return [];
+    } catch {
+      return [new ErrorNode(vscode.l10n.t('errorFetchingGists'))];
     }
   }
 
@@ -84,37 +80,19 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     const providers = this.gistManager.getAllServices();
 
     if (providers.length === 0) {
-      vscode.window.showInformationMessage(vscode.l10n.t('noActiveProviders'));
-      return [];
+      return [new EmptyNode(vscode.l10n.t('noActiveProviders'))];
     }
 
     const cacheKey = 'allGists';
     const cached = this.getCached<GistTreeItem[]>(cacheKey);
-    if (cached) {
-      return cached;
-    }
+    if (cached) return cached;
 
-    const items: GistTreeItem[] = [];
+    const items: GistFolderNode[] = [];
 
     for (const [providerId, provider] of providers) {
       const gists = await provider.getGists();
       for (const gist of gists) {
-        const gistUri = vscode.Uri.from({
-          scheme: SCHEMA,
-          authority: providerId,
-          query: `id=${gist.id}`,
-        });
-
-        items.push({
-          gist,
-          collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
-          iconPath: new vscode.ThemeIcon('note'),
-          id: gist.id,
-          label: gist.description || vscode.l10n.t('unnamedGist'),
-          providerId,
-          resourceUri: gistUri,
-          contextValue: 'gistFolder',
-        });
+        items.push(new GistFolderNode(gist, providerId));
       }
     }
 
@@ -122,53 +100,20 @@ export class GistTreeProvider implements vscode.TreeDataProvider<GistTreeItem> {
     return items;
   }
 
-  private async getFileItems(element: GistTreeItem): Promise<GistTreeItem[]> {
-    if (!element.providerId || !element.id) {
-      return [];
-    }
-
+  private async getFileItems(element: GistFolderNode): Promise<GistTreeItem[]> {
     const service = this.gistManager.getService(element.providerId);
+    if (!service) return [];
 
-    if (!service) {
-      return [];
-    }
-
-    const cacheKey = `gist:${element.providerId}:${element.id}`;
+    const cacheKey = `gist:${element.providerId}:${element.gist.id}`;
     const cached = this.getCached<GistTreeItem[]>(cacheKey);
-    if (cached) {
-      return cached;
-    }
+    if (cached) return cached;
 
-    const gist = await service.getGist(element.id);
+    const gist = await service.getGist(element.gist.id);
+    if (!gist) return [];
 
-    if (!gist) {
-      return [];
-    }
-
-    const files = Object.keys(gist.files ?? {});
-
-    const items = files.map((filename): GistTreeItem => {
-      const fileUri = vscode.Uri.from({
-        scheme: SCHEMA,
-        authority: element.providerId,
-        path: `/${filename}`,
-        query: `id=${gist.id}`,
-      });
-
-      return {
-        id: filename,
-        label: filename,
-        iconPath: vscode.ThemeIcon.File,
-        command: {
-          command: 'gisthub.openGist',
-          title: vscode.l10n.t('openGist'),
-          arguments: [element.id, filename, element.providerId],
-        },
-        providerId: element.providerId,
-        resourceUri: fileUri,
-        contextValue: 'gistItem',
-      };
-    });
+    const items = Object.keys(gist.files ?? {}).map(
+      (filename) => new GistFileNode(filename, gist.id, element.providerId),
+    );
 
     this.setCache(cacheKey, items);
     return items;
