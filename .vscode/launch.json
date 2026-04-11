@@ -8,7 +8,11 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}/apps/extension"],
       "outFiles": ["${workspaceFolder}/apps/extension/dist/**/*.js"],
       "preLaunchTask": "${defaultBuildTask}",
-      "sourceMaps": true
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+        "webpack://?:*/*": "${workspaceFolder}/apps/extension/*"
+      }
     }
   ]
 }
