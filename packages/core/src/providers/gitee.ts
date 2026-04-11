@@ -57,6 +57,7 @@ export class GiteeProvider implements GistProvider {
       params: {
         access_token: token,
       },
+      timeout: 10000,
     });
     this.fileSizeLimit = FILE_SIZE_LIMITS[GistProviderEnum.Gitee];
   }
@@ -126,7 +127,9 @@ export class GiteeProvider implements GistProvider {
   }
 
   async getGist(id: string): Promise<Gist> {
-    const response = await this.axiosInstance.get<GiteeGistObject>(`/gists/${id}`);
+    const response = await this.axiosInstance.get<GiteeGistObject>(
+      `/gists/${id}`,
+    );
     return this.convertToStandardGist(response.data);
   }
 

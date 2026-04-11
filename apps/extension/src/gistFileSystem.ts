@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import type { GistServiceManager } from './services/gist/gistManager';
+import { parseUri } from './utils';
 
 export class GistFileSystemProvider implements vscode.FileSystemProvider {
   private readonly eventEmitter = new vscode.EventEmitter<
@@ -47,7 +48,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
 
   async readFile(uri: vscode.Uri): Promise<Uint8Array> {
     try {
-      const { gistId, filename, providerId } = this.parseUri(uri);
+      const { gistId, filename, providerId } = parseUri(uri);
       const provider = this.manager.getService(providerId);
 
       if (!provider) {
@@ -74,7 +75,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     content: Uint8Array,
     options: { readonly create: boolean; readonly overwrite: boolean },
   ): Promise<void> {
-    const { gistId, filename, providerId } = this.parseUri(uri);
+    const { gistId, filename, providerId } = parseUri(uri);
     const provider = this.manager.getService(providerId);
     const contentStr = new TextDecoder().decode(content);
 
@@ -105,7 +106,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     uri: vscode.Uri,
     _options: { readonly recursive: boolean },
   ): Promise<void> {
-    const { gistId, filename, providerId } = this.parseUri(uri);
+    const { gistId, filename, providerId } = parseUri(uri);
 
     const provider = this.manager.getService(providerId);
 
@@ -128,14 +129,14 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     newUri: vscode.Uri,
     _options: { readonly overwrite: boolean },
   ): Promise<void> {
-    const { gistId, filename: oldFilename, providerId } = this.parseUri(oldUri);
+    const { gistId, filename: oldFilename, providerId } = parseUri(oldUri);
     const provider = this.manager.getService(providerId);
 
     if (!provider) {
       throw vscode.FileSystemError.FileNotFound(oldUri);
     }
 
-    const { filename: newFilename } = this.parseUri(newUri);
+    const { filename: newFilename } = parseUri(newUri);
 
     const content = await provider.getGistContent(gistId, oldFilename);
 
@@ -161,7 +162,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
       gistId: sourceGistId,
       filename: sourceFilename,
       providerId,
-    } = this.parseUri(source);
+    } = parseUri(source);
     const provider = this.manager.getService(providerId);
 
     if (!provider) {
@@ -169,7 +170,7 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     }
 
     const { gistId: destGistId, filename: destFilename } =
-      this.parseUri(destination);
+      parseUri(destination);
 
     const content = await provider.getGistContent(sourceGistId, sourceFilename);
 
@@ -186,29 +187,6 @@ export class GistFileSystemProvider implements vscode.FileSystemProvider {
     }
 
     this.notifyFileChanged(destination, vscode.FileChangeType.Created);
-  }
-
-  private parseUri(uri: vscode.Uri): {
-    gistId: string;
-    filename: string;
-    providerId: string;
-  } {
-    // URI: gisthub://providerId/filename?id=xxx
-
-    const providerId = uri.authority;
-    if (!providerId) {
-      throw vscode.FileSystemError.FileNotFound(uri);
-    }
-
-    const filename = uri.path.startsWith('/') ? uri.path.slice(1) : uri.path;
-    const params = new URLSearchParams(uri.query);
-    const gistId = params.get('id');
-
-    if (!gistId) {
-      throw new Error(vscode.l10n.t('invalidGistUri'));
-    }
-
-    return { gistId, filename: decodeURIComponent(filename), providerId };
   }
 
   private notifyFileChanged(

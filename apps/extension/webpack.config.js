@@ -3,6 +3,10 @@
 'use strict';
 
 const path = require('path');
+const { DefinePlugin } = require('webpack');
+const dotenv = require('dotenv');
+
+const env = dotenv.config().parsed ?? {};
 
 //@ts-check
 /** @typedef {import('webpack').Configuration} WebpackConfig **/
@@ -40,6 +44,17 @@ const extensionConfig = {
       },
     ],
   },
+  plugins: [
+    new DefinePlugin({
+      // 优先取 CI/系统环境变量，fallback 到 .env 文件
+      'process.env.GITEE_CLIENT_ID': JSON.stringify(
+        process.env.GITEE_CLIENT_ID ?? env.GITEE_CLIENT_ID,
+      ),
+      'process.env.GITEE_CLIENT_SECRET': JSON.stringify(
+        process.env.GITEE_CLIENT_SECRET ?? env.GITEE_CLIENT_SECRET,
+      ),
+    }),
+  ],
   devtool: 'nosources-source-map',
   infrastructureLogging: {
     level: 'log', // enables logging required for problem matchers

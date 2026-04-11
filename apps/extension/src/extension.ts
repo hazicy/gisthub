@@ -4,7 +4,7 @@ import { GistFileSystemProvider } from './gistFileSystem';
 import { GistServiceManager } from './services/gist/gistManager';
 import { GistTreeProvider } from './views/tree/gistTreeData';
 import { StarTreeProvider } from './views/tree/starTreeData';
-import { StarDecorationProvider } from './views/tree/starDecorationProvider';
+import { DecorationProvider } from './views/tree/decorationProvider';
 import { GiteeAuthenticationProvider } from './giteeAuth';
 
 export const SCHEMA = 'gisthub';
@@ -26,16 +26,16 @@ export async function activate(context: vscode.ExtensionContext) {
   // 初始化 gist service manager
   const gistManager = GistServiceManager.getInstance(context);
   await gistManager.init();
+  const starDecorationProvider = new DecorationProvider(gistManager);
 
   // 创建树状图提供者
   const gistProvider = new GistTreeProvider(gistManager);
   const starProvider = new StarTreeProvider(gistManager);
-  const starDecorationProvider = new StarDecorationProvider(gistManager);
 
   // 注册树状图提供者
   vscode.window.registerTreeDataProvider('gistView', gistProvider);
   vscode.window.registerTreeDataProvider('starView', starProvider);
-  vscode.window.registerFileDecorationProvider(starDecorationProvider);
+  // vscode.window.registerFileDecorationProvider(starDecorationProvider);
 
   // 注册文件系统提供者
   const fileSystemDisposable = vscode.workspace.registerFileSystemProvider(
@@ -47,7 +47,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const refreshCallback = async () => {
     gistProvider?.refresh();
     starProvider?.refresh();
-    await starDecorationProvider?.refresh();
+    // await starDecorationProvider?.refresh();
   };
 
   // 注册刷新命令

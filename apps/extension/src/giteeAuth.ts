@@ -1,72 +1,72 @@
 import axios from 'axios';
 import * as vscode from 'vscode';
 
+const CLIENT_ID = process.env.GITEE_CLIENT_ID;
+const CLIENT_SECRET = process.env.GITEE_CLIENT_SECRET;
+
+const SECRET_KEYS = {
+  TOKEN: 'gitee-token',
+  EXPIRES_AT: 'gitee-token-expiresAt',
+  REFRESH_TOKEN: 'gitee-token-refreshToken',
+} as const;
+
+interface TokenResponse {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  created_at: number;
+}
+
 export class GiteeAuthenticationProvider
   implements vscode.AuthenticationProvider
 {
-  context: vscode.ExtensionContext;
-
-  private _onDidChangeSessions =
+  private readonly _onDidChangeSessions =
     new vscode.EventEmitter<vscode.AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
-  onDidChangeSessions = this._onDidChangeSessions.event;
+  readonly onDidChangeSessions = this._onDidChangeSessions.event;
 
-  constructor(context: vscode.ExtensionContext) {
-    this.context = context;
-  }
+  constructor(private readonly context: vscode.ExtensionContext) {}
 
   async getSessions(): Promise<vscode.AuthenticationSession[]> {
-    const token = await this.context.secrets.get('gitee-token');
+    const isValid = await this.isTokenValid();
 
-    if (!token) {
-      return [];
+    if (!isValid) {
+      try {
+        await this.refreshAccessToken();
+      } catch {
+        await this.clearSecrets();
+        return [];
+      }
     }
 
-    return [
-      {
-        id: 'gitee-session',
-        accessToken: token,
-        account: {
-          id: 'gitee',
-          label: 'Gitee User',
-        },
-        scopes: ['gist'],
-      },
-    ];
+    const token = await this.context.secrets.get(SECRET_KEYS.TOKEN);
+    if (!token) return [];
+
+    return [this.buildSession(token, ['gist'])];
   }
 
   async createSession(
     scopes: readonly string[],
   ): Promise<vscode.AuthenticationSession> {
-    const clientId =
-      'ad1a15f73956895e8befe1e66caec4cb6493e750af62647dc404ac97369a27da';
-    const clientSecret = '';
-
     const redirectUri = `${vscode.env.uriScheme}://Hazi.gisthub`;
-
-    const authUri = `https://gitee.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code`;
+    const authUri =
+      `https://gitee.com/oauth/authorize` +
+      `?client_id=${CLIENT_ID}` +
+      `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+      `&response_type=code`;
 
     await vscode.env.openExternal(vscode.Uri.parse(authUri));
+
     const code = await this.waitForCode();
+    const tokenData = await this.exchangeCodeForToken(code, redirectUri);
+    await this.storeTokenData(tokenData);
 
-    const token = await this.exchangeCodeForToken(
-      code as string,
-      clientId,
-      clientSecret,
-      redirectUri,
+    const session = this.buildSession(
+      tokenData.access_token,
+      scopes as string[],
     );
-
-    await this.context.secrets.store('gitee-token', token);
-
-    const session: vscode.AuthenticationSession = {
-      id: 'gitee-session',
-      accessToken: token,
-      account: {
-        id: 'gitee',
-        label: 'Gitee User',
-      },
-      scopes: scopes as string[],
-    };
 
     this._onDidChangeSessions.fire({
       added: [session],
@@ -78,53 +78,106 @@ export class GiteeAuthenticationProvider
   }
 
   async removeSession(): Promise<void> {
-    await this.context.secrets.delete('gitee-token');
+    const token = await this.context.secrets.get(SECRET_KEYS.TOKEN);
+    if (!token) return;
+
+    await this.clearSecrets();
 
     this._onDidChangeSessions.fire({
       added: [],
-      removed: [],
+      removed: [this.buildSession(token, ['gist'])],
       changed: [],
     });
   }
 
+  private buildSession(
+    token: string,
+    scopes: string[],
+  ): vscode.AuthenticationSession {
+    return {
+      id: 'gitee-session',
+      accessToken: token,
+      account: { id: 'gitee', label: 'Gitee User' },
+      scopes,
+    };
+  }
+
+  private async storeTokenData(data: TokenResponse): Promise<void> {
+    const expiresAt = (data.created_at + data.expires_in) * 1000;
+    await Promise.all([
+      this.context.secrets.store(SECRET_KEYS.TOKEN, data.access_token),
+      this.context.secrets.store(SECRET_KEYS.EXPIRES_AT, String(expiresAt)),
+      this.context.secrets.store(SECRET_KEYS.REFRESH_TOKEN, data.refresh_token),
+    ]);
+  }
+
+  private async clearSecrets(): Promise<void> {
+    await Promise.all(
+      Object.values(SECRET_KEYS).map((k) => this.context.secrets.delete(k)),
+    );
+  }
+
   private async exchangeCodeForToken(
     code: string,
-    clientId: string,
-    clientSecret: string,
     redirectUri: string,
-  ): Promise<string> {
-    const res = await axios.post(
+  ): Promise<TokenResponse> {
+    const { data } = await axios.post<TokenResponse>(
       'https://gitee.com/oauth/token',
       {
         grant_type: 'authorization_code',
         code,
-        client_id: clientId,
-        client_secret: clientSecret,
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
         redirect_uri: redirectUri,
       },
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      },
+      { headers: { Accept: 'application/json' } },
     );
-
-    return res.data.access_token;
+    return data;
   }
 
   private waitForCode(): Promise<string> {
-    return new Promise((resolve) => {
-      const handler = vscode.window.registerUriHandler({
-        handleUri: (uri: vscode.Uri) => {
-          const params = new URLSearchParams(uri.query);
-          const code = params.get('code');
+    return new Promise((resolve, reject) => {
+      // 添加超时，避免永久挂起
+      const timeout = setTimeout(
+        () => {
+          handler.dispose();
+          reject(new Error('OAuth timeout: no code received within 5 minutes'));
+        },
+        5 * 60 * 1000,
+      );
 
+      const handler = vscode.window.registerUriHandler({
+        handleUri(uri: vscode.Uri) {
+          const code = new URLSearchParams(uri.query).get('code');
           if (code) {
-            resolve(code);
+            clearTimeout(timeout);
             handler.dispose();
+            resolve(code);
           }
         },
       });
     });
+  }
+
+  private async refreshAccessToken(): Promise<void> {
+    const refreshToken = await this.context.secrets.get(
+      SECRET_KEYS.REFRESH_TOKEN,
+    );
+    if (!refreshToken) throw new Error('Missing refresh token');
+
+    const { data } = await axios.post<TokenResponse>(
+      'https://gitee.com/oauth/token',
+      { grant_type: 'refresh_token', refresh_token: refreshToken },
+      { headers: { Accept: 'application/json' } },
+    );
+
+    await this.storeTokenData(data);
+  }
+
+  private async isTokenValid(): Promise<boolean> {
+    const expiresAt = await this.context.secrets.get(SECRET_KEYS.EXPIRES_AT);
+    if (!expiresAt) return false;
+
+    return Date.now() < Number(expiresAt) - 60_000;
   }
 }

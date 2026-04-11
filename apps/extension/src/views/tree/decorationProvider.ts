@@ -1,12 +1,13 @@
 import * as vscode from 'vscode';
 import type { GistServiceManager } from '../../services/gist/gistManager';
+import { parseUri } from '../../utils';
 
 const ProviderIds = {
   GitHub: 'github',
   Gitee: 'gitee',
 } as const;
 
-export class StarDecorationProvider implements vscode.FileDecorationProvider {
+export class DecorationProvider implements vscode.FileDecorationProvider {
   private _onDidChangeDecorations = new vscode.EventEmitter<vscode.Uri[]>();
   private starredGistIds = new Set<string>();
 
@@ -36,11 +37,9 @@ export class StarDecorationProvider implements vscode.FileDecorationProvider {
     this._onDidChangeDecorations.fire([]);
   }
 
-  provideFileDecoration(
-    uri: vscode.Uri,
-  ): vscode.FileDecoration | undefined {
+  provideFileDecoration(uri: vscode.Uri): vscode.FileDecoration | undefined {
     const providerId = uri.authority;
-    const gistId = uri.query.match(/id=([^&]+)/)?.[1];
+    const { gistId } = parseUri(uri);
 
     if (!providerId || !gistId) {
       return undefined;

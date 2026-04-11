@@ -3,6 +3,7 @@ import { SCHEMA } from '../extension';
 import { GistServiceManager } from '../services/gist/gistManager';
 import { GistProviderEnum, type Gist } from '@gisthub/core';
 import type { GistNode } from '../views/tree/treeItem';
+import { ZERO_WIDTH_SPACE } from '../constants';
 
 export async function openGist(
   id: string,
@@ -152,6 +153,14 @@ export async function createGistCommand(
       return;
     }
 
+    const filename = await vscode.window.showInputBox({
+      prompt: '文件名',
+    });
+
+    if (!filename) {
+      return;
+    }
+
     const service = manager.getService(providerId);
 
     if (!service) {
@@ -163,8 +172,8 @@ export async function createGistCommand(
       description,
       public: false,
       files: {
-        'README.md': {
-          content: 'Hello World',
+        [filename.trim()]: {
+          content: `${ZERO_WIDTH_SPACE}`,
         },
       },
     });
@@ -206,7 +215,7 @@ export async function createFileCommand(
     await service.updateGist(id, {
       files: {
         [filename]: {
-          content: '',
+          content: `${ZERO_WIDTH_SPACE}`,
         },
       },
     });
