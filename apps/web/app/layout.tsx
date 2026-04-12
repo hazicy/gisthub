@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'GistHub - Gist 管理工具',
-  description: '管理你的 GitHub 和 Gitee Gist',
+  description: '管理你的 GitHub Gist',
 };
 
 export default function RootLayout({

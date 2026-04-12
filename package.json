@@ -2,7 +2,7 @@
   "name": "gisthub",
   "version": "0.0.1",
   "private": true,
-  "description": "GistHub - A VS Code extension and Web Dashboard for managing GitHub/Gitee Gists",
+  "description": "GistHub - A VS Code extension and Web Dashboard for managing GitHub Gists",
   "scripts": {
     "dev:web": "pnpm --filter gisthub-web dev",
     "build:web": "pnpm --filter gisthub-web build",

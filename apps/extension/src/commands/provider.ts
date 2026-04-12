@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { StorageType, GistSubType, type StorageConfig } from '@gisthub/core';
+import { StorageType, type StorageConfig } from '@gisthub/core';
 import type { ProviderConfig } from '../types';
 import { createProvider } from '../utils/providerFactory';
 import type { StorageServiceManager } from '../services/storageManager';
@@ -7,11 +7,7 @@ import type { StorageServiceManager } from '../services/storageManager';
 const PROVIDER_OPTIONS = [
   {
     label: '$(mark-github) Add GitHub Gist',
-    value: { type: StorageType.Gist, subType: GistSubType.GitHub } as const,
-  },
-  {
-    label: '$(cloud) Add Gitee Gist',
-    value: { type: StorageType.Gist, subType: GistSubType.Gitee } as const,
+    value: { type: StorageType.GitHub } as const,
   },
   { label: '$(database) Add S3', value: { type: StorageType.S3 } as const },
   {
@@ -21,10 +17,7 @@ const PROVIDER_OPTIONS = [
 ] as const;
 
 function getProviderIcon(config: ProviderConfig): string {
-  if (config.type === StorageType.Gist) {
-    if (config.subType === GistSubType.GitHub) return '$(mark-github)';
-    if (config.subType === GistSubType.Gitee) return '$(cloud)';
-  }
+  if (config.type === StorageType.GitHub) return '$(mark-github)';
 
   if (config.type === StorageType.S3) return '$(database)';
   if (config.type === StorageType.WebDAV) return '$(server-environment)';
@@ -33,9 +26,7 @@ function getProviderIcon(config: ProviderConfig): string {
 }
 
 function getProviderDescription(config: ProviderConfig): string {
-  if (config.type === StorageType.Gist) {
-    return config.subType === GistSubType.GitHub ? 'GitHub Gist' : 'Gitee Gist';
-  }
+  if (config.type === StorageType.GitHub) return 'GitHub Gist';
 
   if (config.type === StorageType.S3) {
     return `S3 ${config.bucket ? `(${config.bucket})` : ''}`.trim();
@@ -72,11 +63,10 @@ async function askText(
 async function buildConfigFromSelection(
   selection: (typeof PROVIDER_OPTIONS)[number]['value'],
 ): Promise<StorageConfig | undefined> {
-  if (selection.type === StorageType.Gist) {
-    return {
-      type: StorageType.Gist,
-      subType: selection.subType,
-    };
+  if (
+    selection.type === StorageType.GitHub
+  ) {
+    return { type: selection.type };
   }
 
   if (selection.type === StorageType.S3) {

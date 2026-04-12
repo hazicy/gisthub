@@ -7,13 +7,13 @@
 [![License](https://img.shields.io/github/license/hazicy/gisthub?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/github/v/release/hazicy/gisthub?style=flat-square)](https://github.com/hazicy/gisthub/releases)
 
-一个统一的 Gist 管理解决方案，同时提供 VS Code 插件和 Web Dashboard，支持 GitHub 和 Gitee。
+一个统一的 Gist 管理解决方案，同时提供 VS Code 插件和 Web Dashboard，支持 GitHub。
 
 </div>
 
 ## 特性
 
-- **多平台支持**: 同时支持 GitHub 和 Gitee Gist 服务商
+- **多平台支持**: 支持 GitHub Gist 服务商
 - **VS Code 插件**: 在 VS Code 中直接管理你的 Gist
 - **Web Dashboard**: 基于 Next.js 的 Web 管理界面
 - **虚拟文件系统**: 通过 VS Code 虚拟文件系统直接编辑 Gist
@@ -67,7 +67,7 @@ gisthub/
 
 ### @gisthub/core
 
-核心库，提供 Gist 服务的统一接口，支持 GitHub 和 Gitee 提供商。
+核心库，提供 Gist 服务的统一接口，支持 GitHub 提供商。
 
 详细文档: [packages/core/README.md](packages/core/README.md)
 

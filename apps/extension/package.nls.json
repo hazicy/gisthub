@@ -1,6 +1,6 @@
 {
   "displayName": "GistHub",
-  "description": "Manage code snippets from platforms like GitHub, Gitee, etc.",
+  "description": "Manage code snippets from GitHub and compatible storage providers.",
   "gisthub.openGist.title": "Open Gist",
   "gisthub.refresh.title": "Refresh",
   "gisthub.refreshProviders.title": "Refresh Providers",

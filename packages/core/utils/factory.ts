@@ -1,5 +1,5 @@
 import { StorageType, GistSubType, StorageConfig } from '../src/types/storage';
-import { GitHubProvider, GiteeProvider } from '../src/providers';
+import { GitHubProvider } from '../src/providers';
 import { S3Provider } from '../src/providers/s3Provider';
 import { WebDAVProvider } from '../src/providers/webdavProvider';
 import { StorageService } from '../src/services/storageService';
@@ -11,19 +11,16 @@ export function createStorageService(config: StorageConfig): StorageService {
   const { type, subType, ...rest } = config;
 
   switch (type) {
+    case StorageType.GitHub:
+      return new StorageService(new GitHubProvider(rest.token, rest.proxyUrl));
+
     case StorageType.Gist:
-      switch (subType) {
-        case GistSubType.GitHub:
-          return new StorageService(
-            new GitHubProvider(rest.token, rest.proxyUrl),
-          );
-        case GistSubType.Gitee:
-          return new StorageService(new GiteeProvider(rest.token));
-        default:
-          throw new Error(
-            `Invalid gist subtype: ${subType}. Required: ${GistSubType.GitHub} or ${GistSubType.Gitee}`,
-          );
+      if (subType === GistSubType.GitHub) {
+        return new StorageService(new GitHubProvider(rest.token, rest.proxyUrl));
       }
+      throw new Error(
+        `Invalid legacy gist subtype: ${subType}. Required: ${GistSubType.GitHub}`,
+      );
 
     case StorageType.S3:
       if (!config.bucket) {

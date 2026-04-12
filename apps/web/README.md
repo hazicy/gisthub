@@ -1,10 +1,10 @@
 # GistHub Web
 
-基于 Next.js 的 Web Dashboard，用于管理 GitHub 和 Gitee Gist。
+基于 Next.js 的 Web Dashboard，用于管理 GitHub Gist。
 
 ## 功能
 
-- **多提供商支持**: 同时管理 GitHub 和 Gitee 账户
+- **多提供商支持**: 管理 GitHub 账户
 - **Gist 浏览**: 查看所有 Gist 和星标 Gist
 - **在线编辑**: 内置 Markdown 编辑器，支持语法高亮
 - **文件管理**: 创建、编辑、删除 Gist 和文件

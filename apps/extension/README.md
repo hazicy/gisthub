@@ -1,10 +1,10 @@
 # GistHub - VS Code Extension
 
-VS Code 插件，在编辑器中直接管理你的 GitHub 和 Gitee Gist。
+VS Code 插件，在编辑器中直接管理你的 GitHub Gist。
 
 ## 功能
 
-- **多提供商支持**: 同时支持 GitHub 和 Gitee
+- **多提供商支持**: 支持 GitHub
 - **图形化界面**: 在侧边栏查看和管理所有 Gist
 - **虚拟文件系统**: 通过 VS Code 虚拟文件系统直接编辑 Gist 文件
 - **完整操作**: 支持创建、编辑、删除 Gist 和文件
@@ -36,7 +36,7 @@ pnpm vscode:prepublish
 ### 首次配置
 
 1. 打开 GistHub 侧边栏 (活动栏上的 GistHub 图标)
-2. 点击 "管理提供商" 添加你的 GitHub 或 Gitee Token
+2. 点击 "管理提供商" 添加你的 GitHub Token
 3. 输入你的 Personal Access Token
 
 ### 常用操作
@@ -73,7 +73,7 @@ pnpm --filter gisthub-extension watch
 ```
 extension/
 ├── src/
-│   ├── api/                # API 调用 (Gitee API)
+│   ├── api/                # API 调用 (GitHub API)
 │   ├── commands/           # VS Code 命令
 │   ├── providers/          # Gist 提供商实现
 │   ├── services/           # 服务层

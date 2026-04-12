@@ -1,6 +1,6 @@
 {
   "displayName": "代码片段库",
-  "description": "管理来自 GitHub、Gitee 等平台的代码片段",
+  "description": "管理来自 GitHub 与兼容存储提供商的代码片段",
   "gisthub.openGist.title": "打开 Gist",
   "gisthub.refresh.title": "刷新",
   "gisthub.refreshProviders.title": "刷新提供者",

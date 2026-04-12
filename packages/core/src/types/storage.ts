@@ -2,17 +2,18 @@
  * 存储提供者类型
  */
 export enum StorageType {
-  Gist = 'gist',
+  GitHub = 'github',
   S3 = 's3',
   WebDAV = 'webdav',
+  // Legacy type. Prefer GitHub as top-level provider type.
+  Gist = 'gist',
 }
 
 /**
- * Gist 子类型（区分 GitHub 和 Gitee）
+ * Gist 子类型（兼容历史配置）
  */
 export enum GistSubType {
   GitHub = 'github',
-  Gitee = 'gitee',
 }
 
 /**
@@ -42,7 +43,8 @@ export interface StorageContent {
  */
 export interface StorageConfig {
   type: StorageType;
-  subType?: GistSubType;           // 仅 Gist 类型需要
+  // Legacy field for old `type: gist` configs.
+  subType?: GistSubType;
   token?: string;                  // 认证 token
   endpoint?: string;               // S3/WebDAV endpoint
   bucket?: string;                 // S3 bucket 名称
@@ -102,3 +104,7 @@ export const DEFAULT_FILE_SIZE_LIMIT: FileSizeLimit = {
   maxFileSize: 100 * 1024 * 1024,
   maxRequestSize: 100 * 1024 * 1024,
 };
+
+export function isGistStorageType(type: StorageType): boolean {
+  return type === StorageType.GitHub || type === StorageType.Gist;
+}

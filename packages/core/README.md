@@ -10,12 +10,12 @@ pnpm add @gisthub/core
 
 ## 概述
 
-`@gisthub/core` 是 GistHub 项目的核心库，定义了 Gist 操作的通用接口，并提供了 GitHub 和 Gitee 提供商的具体实现。
+`@gisthub/core` 是 GistHub 项目的核心库，定义了 Gist 操作的通用接口，并提供了 GitHub 提供商的具体实现。
 
 ## 功能
 
 - **统一接口**: 定义 `GistProvider` 接口，统一不同提供商的操作
-- **多提供商支持**: 内置 GitHub 和 Gitee 支持
+- **多提供商支持**: 内置 GitHub 支持
 - **类型安全**: 完整的 TypeScript 类型定义
 - **文件大小验证**: 支持不同提供商的文件大小限制验证
 

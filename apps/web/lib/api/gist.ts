@@ -1,4 +1,4 @@
-import { GistService, GitHubProvider, GiteeProvider, GistProviderEnum } from '@gisthub/core';
+import { GistService, GitHubProvider } from '@gisthub/core';
 import type { GistProvider, Gist, CreateGistParams, UpdateGistParams } from '@/types/gist';
 
 class GistAPI {
@@ -12,9 +12,6 @@ class GistAPI {
     switch (provider.type) {
       case 'github':
         coreProvider = new GitHubProvider(provider.token);
-        break;
-      case 'gitee':
-        coreProvider = new GiteeProvider(provider.token);
         break;
       default:
         throw new Error(`Unknown provider type: ${provider.type}`);

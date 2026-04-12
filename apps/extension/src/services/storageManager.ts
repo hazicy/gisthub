@@ -4,10 +4,9 @@ import {
   type StorageConfig,
   type StorageService,
   StorageType,
-  GistSubType,
 } from '@gisthub/core';
 import { loadServices, saveService } from '../store/serviceStorage';
-import { getGiteeAccessToken, getGithubAccessToken } from './authService';
+import { getGithubAccessToken } from './authService';
 import type { ProviderConfig } from '../types';
 
 export class StorageServiceManager {
@@ -27,28 +26,36 @@ export class StorageServiceManager {
     return this.instance;
   }
 
-  private async hydrateConfig(config: ProviderConfig): Promise<StorageConfig> {
+  private normalizeLegacyConfig(config: ProviderConfig): ProviderConfig {
     if (config.type !== StorageType.Gist) {
       return config;
     }
 
-    if (config.subType === GistSubType.GitHub) {
-      const token = await getGithubAccessToken();
-      return { ...config, token };
-    }
-
-    if (config.subType === GistSubType.Gitee) {
-      const token = await getGiteeAccessToken();
-      return { ...config, token };
+    if (config.subType === 'github') {
+      return { ...config, type: StorageType.GitHub };
     }
 
     return config;
   }
 
+  private async hydrateConfig(config: ProviderConfig): Promise<StorageConfig> {
+    const normalized = this.normalizeLegacyConfig(config);
+
+    if (normalized.type === StorageType.GitHub) {
+      const token = await getGithubAccessToken();
+      return { ...normalized, token };
+    }
+
+    return normalized;
+  }
+
   async init() {
     const saved = loadServices(this.context);
+    const normalizedSaved = saved.map((config) =>
+      this.normalizeLegacyConfig(config),
+    );
 
-    for (const config of saved) {
+    for (const config of normalizedSaved) {
       try {
         const hydratedConfig = await this.hydrateConfig(config);
         const service = createStorageService(hydratedConfig);
@@ -58,7 +65,14 @@ export class StorageServiceManager {
       }
     }
 
-    this.configs = saved;
+    this.configs = normalizedSaved;
+
+    const hasLegacyConfig = saved.some(
+      (config) => config.type === StorageType.Gist,
+    );
+    if (hasLegacyConfig) {
+      await saveService(this.context, normalizedSaved);
+    }
   }
 
   async registerService(id: string, config: ProviderConfig) {

@@ -3,24 +3,10 @@ import { registerAllCommands } from './commands';
 import { GistFileSystemProvider } from './gistFileSystem';
 import { StorageServiceManager } from './services/storageManager';
 import { GistTreeProvider } from './views/tree/gistTreeData';
-import { GiteeAuthenticationProvider } from './giteeAuth';
 
 export const SCHEMA = 'gisthub';
 
 export async function activate(context: vscode.ExtensionContext) {
-  const giteeAuthProvider = new GiteeAuthenticationProvider(context);
-
-  context.subscriptions.push(
-    vscode.authentication.registerAuthenticationProvider(
-      'gitee',
-      'Gitee',
-      giteeAuthProvider,
-      {
-        supportsMultipleAccounts: false,
-      },
-    ),
-  );
-
   // 初始化 gist service manager
   const gistManager = StorageServiceManager.getInstance(context);
   await gistManager.init();

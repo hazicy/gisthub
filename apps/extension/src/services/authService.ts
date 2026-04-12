@@ -13,17 +13,3 @@ export async function getGithubAccessToken() {
 
   return session.accessToken;
 }
-
-export async function getGiteeAccessToken() {
-  const scopes: string[] = ['gist'];
-
-  const session = await vscode.authentication.getSession('gitee', scopes, {
-    createIfNone: true,
-  });
-
-  if (!session) {
-    throw new Error('Failed to get Gitee session. Please try again.');
-  }
-
-  return session.accessToken;
-}

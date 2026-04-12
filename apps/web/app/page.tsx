@@ -10,7 +10,7 @@ export default function Home() {
         <Card className="mt-12">
           <Card.Header className="flex flex-col items-center justify-center pb-2">
             <h1 className="text-3xl font-bold">GistHub</h1>
-            <p className="text-default-500">管理你的 GitHub 和 Gitee Gists</p>
+            <p className="text-default-500">管理你的 GitHub Gists</p>
           </Card.Header>
           <Card.Content className="flex items-center justify-center py-8">
             <div className="flex gap-4">
@@ -28,7 +28,7 @@ export default function Home() {
           </Card.Content>
           <Card.Footer className="justify-center">
             <p className="text-sm text-default-400">
-              支持 GitHub 和 Gitee 提供商
+              支持 GitHub 提供商
             </p>
           </Card.Footer>
         </Card>

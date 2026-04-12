@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { StorageType, GistSubType, type StorageConfig } from '@gisthub/core';
+import { StorageType, type StorageConfig } from '@gisthub/core';
 import { StorageServiceManager } from '../services/storageManager';
 import type { ProviderConfig } from '../types';
 
@@ -20,18 +20,12 @@ export async function createProvider(
   const finalConfig: ProviderConfig = {
     ...config,
     id: finalId,
-    proxyUrl:
-      config.type === StorageType.Gist && config.subType === GistSubType.GitHub
-        ? proxyUrl
-        : config.proxyUrl,
+    proxyUrl: config.type === StorageType.GitHub ? proxyUrl : config.proxyUrl,
   };
 
   await manager.registerService(finalId, finalConfig);
 }
 
-export function buildGistConfig(subType: GistSubType): StorageConfig {
-  return {
-    type: StorageType.Gist,
-    subType,
-  };
+export function buildGistConfig(type: StorageType.GitHub): StorageConfig {
+  return { type };
 }

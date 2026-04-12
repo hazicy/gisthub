@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { SCHEMA } from '../extension';
 import { StorageServiceManager } from '../services/storageManager';
-import { StorageType } from '@gisthub/core';
+import { isGistStorageType } from '@gisthub/core';
 import type { GistNode } from '../views/tree/treeItem';
 import { ZERO_WIDTH_SPACE } from '../constants';
 
@@ -163,7 +163,7 @@ export async function createGistCommand(
 
     if (!name) return;
 
-    if (service.getType() === StorageType.Gist) {
+    if (isGistStorageType(service.getType())) {
       const filename = await vscode.window.showInputBox({ prompt: '文件名' });
       if (!filename) return;
 
@@ -276,9 +276,7 @@ export async function openInExternal(item: GistNode): Promise<void> {
   const providerId = item.providerId.toLowerCase();
   let url: string | undefined;
 
-  if (providerId.includes('gitee')) {
-    url = `https://gitee.com/gists/${gistId}`;
-  } else if (providerId.includes('github')) {
+  if (providerId.includes('github')) {
     url = `https://gist.github.com/${gistId}`;
   } else {
     vscode.window.showInformationMessage('当前存储类型不支持外部 Gist 链接');
@@ -357,7 +355,7 @@ export async function uploadFileCommand(
       return;
     }
 
-    if (service.getType() === StorageType.Gist) {
+    if (isGistStorageType(service.getType())) {
       const choice = await vscode.window.showQuickPick(
         [
           {

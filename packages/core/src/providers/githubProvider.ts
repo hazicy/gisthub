@@ -4,7 +4,6 @@ import {
   StorageType,
   StorageEntry,
   StorageContent,
-  GistSubType,
   FileSizeLimit,
   FileSizeValidation,
 } from '../types/storage';
@@ -49,11 +48,11 @@ export class GitHubGistProvider implements StorageProvider {
   }
 
   getType(): StorageType {
-    return StorageType.Gist;
+    return StorageType.GitHub;
   }
 
   getName(): string {
-    return GistSubType.GitHub;
+    return StorageType.GitHub;
   }
 
   getFileSizeLimit(): FileSizeLimit {

@@ -58,7 +58,6 @@ export interface UpdateGistParams {
  */
 export enum GistProviderEnum {
   GitHub = 'github',
-  Gitee = 'gitee',
 }
 
 export interface ProviderConfig {
@@ -81,10 +80,6 @@ export interface FileSizeLimit {
  * 文件大小限制常量
  */
 export const FILE_SIZE_LIMITS: Record<GistProviderEnum, FileSizeLimit> = {
-  [GistProviderEnum.Gitee]: {
-    maxFileSize: 4 * 1024 * 1024, // 4MB
-    maxRequestSize: 4 * 1024 * 1024, // 4MB
-  },
   [GistProviderEnum.GitHub]: {
     maxFileSize: 100 * 1024 * 1024, // 100MB
     maxRequestSize: 100 * 1024 * 1024, // 100MB (使用 gist api)

@@ -13,7 +13,7 @@ const authClient = createAuthClient({
 function SignInContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const provider = searchParams.get('provider') as 'github' | 'gitee' | null;
+  const provider = searchParams.get('provider') as 'github' | null;
 
   useEffect(() => {
     if (provider) {
@@ -21,7 +21,7 @@ function SignInContent() {
     }
   }, [provider]);
 
-  const handleSignIn = async (providerId: 'github' | 'gitee') => {
+  const handleSignIn = async (providerId: 'github') => {
     try {
       await authClient.signIn.social({
         provider: providerId,
@@ -42,10 +42,6 @@ function SignInContent() {
         <Card.Content className="space-y-4">
           <Button className="w-full" onClick={() => handleSignIn('github')}>
             使用 GitHub 登录
-          </Button>
-
-          <Button className="w-full" onClick={() => handleSignIn('gitee')}>
-            使用 Gitee 登录
           </Button>
         </Card.Content>
         <Card.Footer className="justify-center">

@@ -85,6 +85,25 @@ export class S3Provider implements StorageProvider {
     return fullPath.replace(/^\//, '');
   }
 
+  private stripBasePath(path: string): string {
+    if (!this.basePath) {
+      return path.replace(/^\/+/, '');
+    }
+
+    const normalizedBase = this.basePath.replace(/^\/+|\/+$/g, '');
+    const prefix = `${normalizedBase}/`;
+
+    if (path === normalizedBase) {
+      return '';
+    }
+
+    if (path.startsWith(prefix)) {
+      return path.slice(prefix.length);
+    }
+
+    return path;
+  }
+
   async list(path: string): Promise<StorageEntry[]> {
     const prefix = this.getObjectKey(path);
     // 确保 prefix 以斜杠结尾（用于列出目录内容）
@@ -109,7 +128,7 @@ export class S3Provider implements StorageProvider {
           id: prefix,
           name,
           type: 'folder',
-          path: prefix.replace(this.basePath + '/', '').replace(/\/$/, ''),
+          path: this.stripBasePath(prefix).replace(/\/$/, ''),
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         });
@@ -128,7 +147,7 @@ export class S3Provider implements StorageProvider {
           id: key,
           name,
           type: 'file',
-          path: key.replace(this.basePath + '/', ''),
+          path: this.stripBasePath(key),
           size: obj.Size,
           createdAt:
             obj.LastModified?.toISOString() || new Date().toISOString(),

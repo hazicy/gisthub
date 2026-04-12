@@ -1,7 +1,7 @@
 /**
  * Gist 提供商类型
  */
-export type GistProviderType = 'github' | 'gitee';
+export type GistProviderType = 'github';
 
 /**
  * Gist 服务商接口

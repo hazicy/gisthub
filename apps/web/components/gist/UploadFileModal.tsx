@@ -10,7 +10,6 @@ import type { GistProviderType } from '@/types/gist';
 // 文件大小限制常量 (字节)
 const FILE_SIZE_LIMITS: Record<GistProviderType, number> = {
   github: 100 * 1024 * 1024, // 100MB
-  gitee: 4 * 1024 * 1024, // 4MB
 };
 
 interface UploadFileModalProps {

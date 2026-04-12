@@ -2,7 +2,7 @@
 
 ## 项目概述
 
-GistHub 是一个统一的 Gist 管理解决方案，同时提供 VS Code 插件和 Web Dashboard，支持 GitHub 和 Gitee 两个平台。
+GistHub 是一个统一的 Gist 管理解决方案，同时提供 VS Code 插件和 Web Dashboard，支持 GitHub 平台。
 
 ## 项目结构
 

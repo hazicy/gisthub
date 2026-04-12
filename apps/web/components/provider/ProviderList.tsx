@@ -9,12 +9,10 @@ import type { GistProvider, GistProviderType } from '@/types/gist';
 const PROVIDER_ICONS: Record<GistProviderType, string> = {
   github:
     'https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png',
-  gitee: 'https://gitee.com/assets/favicon.ico',
 };
 
 const PROVIDER_NAMES: Record<GistProviderType, string> = {
   github: 'GitHub',
-  gitee: 'Gitee',
 };
 
 export function ProviderList() {
@@ -84,9 +82,6 @@ export function ProviderList() {
         <div className="flex gap-2">
           <Button onClick={() => handleOAuthSignIn('github')}>
             GitHub OAuth 登录
-          </Button>
-          <Button onClick={() => handleOAuthSignIn('gitee')}>
-            Gitee OAuth 登录
           </Button>
         </div>
       </div>
@@ -165,7 +160,6 @@ export function ProviderList() {
             <div className="space-y-4">
               <select id="provider-type" className="select select-bordered w-full">
                 <option value="github">GitHub</option>
-                <option value="gitee">Gitee</option>
               </select>
               <Input
                 id="provider-name"

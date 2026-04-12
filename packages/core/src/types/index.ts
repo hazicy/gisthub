@@ -27,4 +27,5 @@ export {
   StorageType,
   GistSubType,
   DEFAULT_FILE_SIZE_LIMIT,
+  isGistStorageType,
 } from './storage';
